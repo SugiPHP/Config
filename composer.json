@@ -1,0 +1,22 @@
+{
+    "name": "sugiphp/config",
+    "type": "library",
+    "description": "SugiPHP Config Component",
+    "keywords": ["config", "sugiphp"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Plamen Popov",
+            "email": "tzappa@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "psr-0": { 
+            "SugiPHP\\Config\\": ""
+        }
+    },
+    "target-dir": "SugiPHP/Config"
+}
