@@ -26,17 +26,11 @@ class NativeLoader implements LoaderInterface
 
 		$file = false;
 
-		// TODO: check if the $resource is a real file with absolute path
-		
 		if ($this->locator) {
 			// pass it to the locator (if set) and than include the file
-			$files = $this->locator->locate($resource);
-			if (count($files) > 0) {
-				$file = $files[0];
-			}
-		}
-		elseif (is_file($resource) and is_readable($resource)) {
-			// include it
+			$file = $this->locator->locate($resource);
+		} elseif (is_file($resource) and is_readable($resource)) {
+			// check if the $resource is a real file and include it
 			$file = $resource;
 		}
 

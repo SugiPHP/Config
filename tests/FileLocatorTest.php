@@ -11,9 +11,6 @@ use SugiPHP\Config\FileLocator as Locator;
 
 class FileLocatorTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @return [type] [description]
-	 */
 	public function testCreate()
 	{
 		$loader = new Locator("");
@@ -53,5 +50,23 @@ class FileLocatorTest extends PHPUnit_Framework_TestCase
 	{
 		$loader = new Locator(__DIR__);
 		$this->assertNull($loader->locate(""));
+	}
+
+	public function testDontFindTestFile()
+	{
+		$loader = new Locator(__DIR__);
+		$this->assertNull($loader->locate("test.php"));
+	}
+
+	public function testFindTestFileOneSearchPath()
+	{
+		$loader = new Locator(__DIR__."/config");
+		$this->assertEquals(__DIR__."/config/test.php", $loader->locate("test.php"));
+	}
+
+	public function testFindTestFileTwoSearchPaths()
+	{
+		$loader = new Locator(array(__DIR__, __DIR__."/config"));
+		$this->assertEquals(__DIR__."/config/test.php", $loader->locate("test.php"));
 	}
 }
