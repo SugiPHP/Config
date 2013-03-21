@@ -8,13 +8,13 @@
 
 namespace SugiPHP\Config;
 
-interface LoaderInterface
+interface LocatorInterface
 {
 	/**
-	 * Tries to load a resource.
+	 * Search for a particular resource.
 	 * 
 	 * @param  string $resource
-	 * @return array|NULL - NULL if the resource was not found
+	 * @return string|null
 	 */
-	public function load($resource);
+	public function locate($resource);
 }
