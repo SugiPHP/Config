@@ -1,7 +1,7 @@
 Config
 ======
 
-SugiPHP\Config can read several different type of files (php, json, ini, neon, yaml, etc.) and interpret them as 
+SugiPHP\Config can read several different type of files (php, json, yaml, ini, etc.) and interpret them as 
 configuration options. With simple get("your.key") method you can retrieve corresponding config value.
 
 Loaders

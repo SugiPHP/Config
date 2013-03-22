@@ -92,7 +92,7 @@ class FileLocator implements LocatorInterface
 		}
 
 		// TODO: windows
-		// if (preg_match("#[a-z]:\\.+#iU", $path)) ... // regex not done!
+		// if (preg_match("#[a-z]:\\.+#iU", $path)) ...  // regex not done!
 
 		// TODO: remote server (ftp, http, etc. schemes)
 		

@@ -7,10 +7,10 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-use SugiPHP\Config\IniLoader as Loader;
+use SugiPHP\Config\YamlLoader as Loader;
 use SugiPHP\Config\FileLocator as Locator;
 
-class IniLoaderTest extends PHPUnit_Framework_TestCase
+class YamlLoaderTest extends PHPUnit_Framework_TestCase
 {
 	public function testJsonLoaderIsLoaderInterface()
 	{
@@ -22,28 +22,27 @@ class IniLoaderTest extends PHPUnit_Framework_TestCase
 	{
 		$loader = new Loader();
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertNull($loader->load("nosuchfile.ini"));
+		$this->assertNull($loader->load("nosuchfile.yml"));
 	}
 
 	public function testAddExtension()
 	{
-		$testArr = array("istr" => "value", "iarr" => array("sub" => "subvalue", "nokey"), "inull" => null, "iint" => 42, "izero" => 0, "ifalse" => false, "itrue" => true);
-		
 		$loader = new Loader();
-		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.ini"));
+		$testArr = include(__DIR__."/config/test.php");
+		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.yml"));
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
 	
 	public function testLoaderWithLocator()
 	{
-		$testArr = array("istr" => "value", "iarr" => array("sub" => "subvalue", "nokey"), "inull" => null, "iint" => 42, "izero" => 0, "ifalse" => false, "itrue" => true);
+		$testArr = include(__DIR__."/config/test.php");
 
 		$locator = new Locator(array(__DIR__, __DIR__."/config"));
 		$loader = new Loader($locator);
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertEquals($testArr, $loader->load("config/test.ini"));
+		$this->assertEquals($testArr, $loader->load("config/test.yml"));
 		$this->assertEquals($testArr, $loader->load("config/test"));
-		$this->assertEquals($testArr, $loader->load("test.ini"));
+		$this->assertEquals($testArr, $loader->load("test.yml"));
 		$this->assertEquals($testArr, $loader->load("test"));
 	}	
 }

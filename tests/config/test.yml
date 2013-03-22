@@ -1,0 +1,9 @@
+str: "value"
+arr: 
+    sub: "subvalue"
+    0: "nokey"
+"null": null
+int:   42
+zero:  0
+"false": false
+"true":  true

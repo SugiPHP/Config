@@ -25,7 +25,7 @@ class JsonLoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertNull($loader->load("nosuchfile.json"));
 	}
 
-	public function testAddPhp()
+	public function testAddExtension()
 	{
 		$loader = new Loader();
 		$testArr = include(__DIR__."/config/test.php");

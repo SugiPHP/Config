@@ -13,10 +13,17 @@
     "require": {
         "php": ">=5.3"
     },
+    "require-dev": {
+        "symfony/yaml": "dev-master"
+    },
+    "suggests": {
+        "symfony/yaml": "Symfony Yaml Component to use .yml config files"
+    },
     "autoload": {
         "psr-0": { 
             "SugiPHP\\Config\\": ""
         }
     },
-    "target-dir": "SugiPHP/Config"
+    "target-dir": "SugiPHP/Config",
+    "minimum-stability": "dev"
 }

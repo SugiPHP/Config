@@ -8,6 +8,9 @@
 
 namespace SugiPHP\Config;
 
+/**
+ * Loader Interface
+ */
 interface LoaderInterface
 {
 	/**

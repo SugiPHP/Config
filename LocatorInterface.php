@@ -8,6 +8,9 @@
 
 namespace SugiPHP\Config;
 
+/**
+ * Locator Interface
+ */
 interface LocatorInterface
 {
 	/**
