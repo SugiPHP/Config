@@ -11,6 +11,7 @@ use SugiPHP\Config\Config;
 use SugiPHP\Config\FileLocator;
 use SugiPHP\Config\NativeLoader;
 use SugiPHP\Config\JsonLoader;
+use SugiPHP\Config\IniLoader;
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
@@ -74,6 +75,23 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$config = new Config($loader);
 
 		$this->assertSame(42, $config->get("test.int"));
+	}
+
+	public function test3Loaders()
+	{
+		$locator = new FileLocator(array(__DIR__, __DIR__."/config"));
+		$loader[] = new IniLoader($locator); // INI loader is FIRST.
+		$loader[] = new JsonLoader($locator);
+		$loader[] = new NativeLoader($locator);
+
+		$config = new Config($loader);
+
+		// in INI there is no key int
+		$this->assertNull($config->get("test.int"));
+		// it's iint 
+		$this->assertNotSame(42, $config->get("test.iint"));
+		// it is "42", not 42
+		$this->assertEquals(42, $config->get("test.iint"));
 	}
 
 /*	
