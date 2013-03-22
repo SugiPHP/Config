@@ -37,7 +37,10 @@ class YamlLoader implements LoaderInterface
 		}
 
 		if ($file) {
-			return Yaml::parse($file);
+			// Passing a file as an input is a deprecated feature and will be removed in Symfony\Yaml 3.0.
+			$yaml = file_get_contents($file);
+			
+			return Yaml::parse($yaml);
 		}
 
 		return null;
