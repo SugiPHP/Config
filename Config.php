@@ -40,18 +40,24 @@ class Config
 	 * find the key.
 	 * 
 	 * @param  string $key
+	 * @param  mixed $default - the value to be returned if the $key is not found
 	 * @return mixed
 	 */
-	public function get($key)
+	public function get($key = null, $default = null)
 	{
+		if (is_null($key)) {
+			return $this->registry;
+		}
+
 		$parts = explode(".", $key);
 		$file = array_shift($parts);
 
 		if (!isset($this->registry[$file])) {
 			$this->registry[$file] = $this->discover($file);
 		}
+		$res = $this->parse($key);
 
-		return $this->parse($key);
+		return is_null($res) ? $default : $res;
 	}
 
 	/**
@@ -93,9 +99,9 @@ class Config
 	}
 
 	/**
-	 * Search for a key with dot notation in the array. If the key is not NULL is returned
+	 * Search for a key with dot notation in the array. If the key is not found NULL is returned
 	 * 
-	 * @param string $key
+	 * @param  string $key
 	 * @return mixed
 	 */
 	protected function parse($key)
