@@ -4,6 +4,8 @@ Config
 SugiPHP\Config can read several different type of files (php, json, yaml, ini, etc.) and interpret them as
 configuration options. With simple get("your.key") method you can retrieve corresponding config value.
 
+[![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
+
 Loaders
 -------
 
