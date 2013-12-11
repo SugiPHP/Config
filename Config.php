@@ -38,7 +38,7 @@ class Config
 	/**
 	 * Returns loaded config option. If the key is not found it checks if registered loaders can
 	 * find the key.
-	 * 
+	 *
 	 * @param  string $key
 	 * @param  mixed $default - the value to be returned if the $key is not found
 	 * @return mixed
@@ -62,29 +62,33 @@ class Config
 
 	/**
 	 * Registers a config variable
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 */
 	public function set($key, $value)
 	{
 		if (strpos($key, ".") === false) {
-			$this->registry[$key] = $value;
-		} else {
-			throw new Exception("Storing keys with dot notation currently is not supported");
-			// TODO: this should be rethought! Do we need this? How not to overwrite already stored arrays...
-			$segments = explode(".", $key);
-			do {
-				$value = array(array_pop($segments) => $value);
-			} while ($segments);
+			// we'll try to load a configuration file (if exists)
+			if (!isset($this->registry[$key])) {
+				$this->registry[$key] = $this->discover($key);
+			}
 
-			$this->registry = array_merge_recursive($this->registry, $value);
+			if (isset($this->registry[$key]) && is_array($this->registry[$key]) && (is_array($value))) {
+				$this->registry[$key] = array_replace_recursive($this->registry[$key], $value);
+			} else {
+				$this->registry[$key] = $value;
+			}
+		} else {
+			$segments = explode(".", $key);
+			$v = array(array_pop($segments) => $value);
+			$this->set(implode(".", $segments), $v);
 		}
 	}
 
 	/**
 	 * Tries to find needed resource by looping each of registered loaders.
-	 * 
+	 *
 	 * @param  string $resource
 	 * @return array
 	 */
@@ -100,7 +104,7 @@ class Config
 
 	/**
 	 * Search for a key with dot notation in the array. If the key is not found NULL is returned
-	 * 
+	 *
 	 * @param  string $key
 	 * @return mixed
 	 */
