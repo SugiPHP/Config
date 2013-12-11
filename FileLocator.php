@@ -97,5 +97,5 @@ class FileLocator implements LocatorInterface
 		// TODO: remote server (ftp, http, etc. schemes)
 		
 		return false;
-    }	
+	}	
 }
