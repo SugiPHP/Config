@@ -31,6 +31,7 @@ return array(
 ```
 
  - JSON (app.json)
+
 ```json
 {
 	"development": {

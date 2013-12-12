@@ -68,21 +68,26 @@ class Config
 	 */
 	public function set($key, $value)
 	{
-		if (strpos($key, ".") === false) {
-			// we'll try to load a configuration file (if exists)
-			if (!isset($this->registry[$key])) {
-				$this->registry[$key] = $this->discover($key);
-			}
+		if (empty($key)) {
+			throw new Exception("Key must be set");
+		}
 
-			if (isset($this->registry[$key]) && is_array($this->registry[$key]) && (is_array($value))) {
-				$this->registry[$key] = array_replace_recursive($this->registry[$key], $value);
-			} else {
-				$this->registry[$key] = $value;
-			}
+		$parts = array_reverse(explode(".", $key));
+		$file = array_pop($parts);
+
+		// we'll try to load a configuration file (if exists)
+		if (!isset($this->registry[$file])) {
+			$this->registry[$file] = $this->discover($file);
+		}
+
+		foreach ($parts as $part) {
+			$value = array($part => $value);
+		}
+
+		if (is_array($this->registry[$file]) && (is_array($value))) {
+		 	$this->registry[$file] = array_replace_recursive($this->registry[$file], $value);
 		} else {
-			$segments = explode(".", $key);
-			$v = array(array_pop($segments) => $value);
-			$this->set(implode(".", $segments), $v);
+		 	$this->registry[$file] = $value;
 		}
 	}
 

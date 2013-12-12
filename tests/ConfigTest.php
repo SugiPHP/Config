@@ -185,4 +185,12 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$config->set("test.int", 7);
 		$this->assertSame(7, $config->get("test.int"));
 	}
+
+	public function testSetWithNoKey()
+	{
+		$config = new Config();
+
+		$this->setExpectedException("SugiPHP\Config\Exception");
+		$config->set(null, 1);
+	}
 }
