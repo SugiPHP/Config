@@ -15,6 +15,7 @@ Usage
 You can use different file types to store settings:
 
  - PHP (with filename app.php)
+
 ```php
 <?php
 
@@ -43,6 +44,7 @@ return array(
 ```
 
  - YAML (app.yml)
+
 ```yaml
 
 development:
@@ -54,6 +56,7 @@ production:
 ```
 
  - INI (app.ini)
+
 ```ini
 [development]
 host=localhost
@@ -64,6 +67,7 @@ host=example.com
 ```
 
 To access the host option no matter wich type of configurations file you use:
+
 ```php
 <?php
 use SugiPHP\Config\Config;
@@ -104,14 +108,18 @@ Lets assume your application resides in a "/path/to/app", and your configuration
 path. Your application needs a database connection. The host, database, user and password are described in a PHP file
 living in configuration directory. You can use a loader which will include a file (a $key = "database" with ".php" extension)
 in that folder and return the contents, like the PHP code will:
+
 ```php
 include "/path/to/app/config/database.php";
 ```
+
 does. A slightly more complicated example is when a database is described in an json format. So the loader will do something
 like:
+
 ```php
 return json_decode(file_get_contents("/path/to/app/config/database.json"), true);
 ```
+
 Another example is if some of your app configurations are stored not in files but lets say in a NoSQL storage. So you can
 write your custom loader which will connect to the NoSQL DB, fetch items and return them as array. And that's really easy,
 and the better thing is that your existing code will not need any modification.
