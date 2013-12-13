@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<document>
+	<str>value</str>
+	<arr>
+		<sub>subvalue</sub>
+	</arr>
+	<arr>nokey</arr>
+	<null>null</null>
+	<int>42</int>
+	<zero>0</zero>
+	<false>false</false>
+	<true>true</true>
+</document>

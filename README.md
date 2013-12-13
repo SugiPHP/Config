@@ -4,7 +4,7 @@ SugiPHP\Config
 [![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
 
 SugiPHP\Config is designed to simplify access to configuration settings. Config class natively supports reading and
-parsing configuration options from several file types (php, json, yaml, ini) stored in one or several locations in
+parsing configuration options from several file types (php, json, yaml, ini, xml) stored in one or several locations in
 your project. Config::get("file.key") method automatically finds configuration file, loads it, parses it and then
 searches for the key and returns it's value. If the file or the key is not found gracefully returns NULL or some other
 default value if it is provided like a second parameter.
@@ -65,6 +65,21 @@ debug=1
 
 [production]
 host=example.com
+```
+
+ - XML (app.xml)
+
+```xml
+<?xml version='1.0'?>
+<environments>
+	<development>
+		<host>localhost</host>
+		<debug>1</debug>
+	</development>
+	<production>
+		<host>example.com</host>
+	</production>
+</environments>
 ```
 
 To access the host option no matter wich type of configurations file you use:
