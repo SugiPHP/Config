@@ -86,11 +86,9 @@ To access the host option no matter wich type of configurations file you use:
 
 ```php
 <?php
-use SugiPHP\Config\Config;
-
-$locator = new FileLocator(__DIR__."/config");
-$loader = new JsonLoader($locator);
-$config = new Config($loader);
+$locator = new \SugiPHP\Config\FileLocator(__DIR__."/config");
+$loader = new \SugiPHP\Config\JsonLoader($locator);
+$config = new \SugiPHP\Config\Config($loader);
 
 $config->get("app.production.host"); // returns example.com
 $config->get("app.development"); // array("host" => "localhost", "debug" => 1)
