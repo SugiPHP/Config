@@ -121,7 +121,7 @@ class Config
 			if ($part === "") {
 				return $values;
 			}
-			if (!is_array($values) or !array_key_exists($part, $values)) {
+			if (!is_array($values) || !array_key_exists($part, $values)) {
 				return ;
 			}
 			$values = $values[$part];

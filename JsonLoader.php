@@ -29,7 +29,7 @@ class JsonLoader implements LoaderInterface
 		if ($this->locator) {
 			// pass it to the locator (if set) and than include the file
 			$file = $this->locator->locate($resource);
-		} elseif (is_file($resource) and is_readable($resource)) {
+		} elseif (is_file($resource) && is_readable($resource)) {
 			// check if the $resource is a real file and include it
 			$file = $resource;
 		}

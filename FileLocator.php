@@ -21,7 +21,7 @@ class FileLocator implements LocatorInterface
 
 	/**
 	 * File Locator creator.
-	 * 
+	 *
 	 * @param array|string $paths
 	 */
 	public function __construct($paths)
@@ -52,11 +52,9 @@ class FileLocator implements LocatorInterface
 		}
 	}
 
-	// TODO: prepend a path in all registered search paths, so to check for a file in that directory first
-
 	/**
 	 * Adds a search paths.
-	 * 
+	 *
 	 * @param string|array $path or several paths
 	 */
 	public function addPath($path)
@@ -69,7 +67,7 @@ class FileLocator implements LocatorInterface
 
 	/**
 	 * Returns all registered search paths.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getPaths()
@@ -77,10 +75,9 @@ class FileLocator implements LocatorInterface
 		return $this->paths;
 	}
 
-
 	/**
 	 * Check if the file/path is given with absolute path.
-	 * 
+	 *
 	 * @param  string $path
 	 * @return bool
 	 */
@@ -91,11 +88,11 @@ class FileLocator implements LocatorInterface
 			return true;
 		}
 
-		// TODO: windows
-		// if (preg_match("#[a-z]:\\.+#iU", $path)) ...  // regex not done!
+		// windows style
+		if (preg_match("#[A-Z]:\\.+#U", $path)) {
+			return true;
+		}
 
-		// TODO: remote server (ftp, http, etc. schemes)
-		
 		return false;
-	}	
+	}
 }

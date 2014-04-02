@@ -1,5 +1,5 @@
-SugiPHP\Config
-==============
+Config
+======
 
 [![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
 

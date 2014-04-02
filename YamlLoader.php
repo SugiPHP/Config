@@ -31,7 +31,7 @@ class YamlLoader implements LoaderInterface
 		if ($this->locator) {
 			// pass it to the locator (if set) and than include the file
 			$file = $this->locator->locate($resource);
-		} elseif (is_file($resource) and is_readable($resource)) {
+		} elseif (is_file($resource) && is_readable($resource)) {
 			// check if the $resource is a real file and include it
 			$file = $resource;
 		}
@@ -39,7 +39,7 @@ class YamlLoader implements LoaderInterface
 		if ($file) {
 			// Passing a file as an input is a deprecated feature and will be removed in Symfony\Yaml 3.0.
 			$yaml = file_get_contents($file);
-			
+
 			return Yaml::parse($yaml);
 		}
 
