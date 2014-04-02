@@ -1,7 +1,7 @@
 Config
 ======
 
-[![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
+[![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/5330315e-2b6d-42c7-98ee-0436d99998d2/mini.png)](https://insight.sensiolabs.com/projects/5330315e-2b6d-42c7-98ee-0436d99998d2)
 
 SugiPHP\Config is designed to simplify access to configuration settings. Config class natively supports reading and
 parsing configuration options from several file types (php, json, yaml, ini, xml) stored in one or several locations in
