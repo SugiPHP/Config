@@ -2,7 +2,7 @@
     "name": "sugiphp/config",
     "type": "library",
     "description": "SugiPHP Config Component",
-    "keywords": ["config", "sugiphp"],
+    "keywords": ["config", "configuration", "PHP", "JSON", "yaml", "XML", "INI"],
     "license": "MIT",
     "authors": [
         {
