@@ -20,7 +20,7 @@
         "symfony/yaml": "Symfony Yaml Component to use .yml config files"
     },
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "SugiPHP\\Config\\": ""
         }
     },
