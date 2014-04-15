@@ -24,6 +24,5 @@
             "SugiPHP\\Config\\": ""
         }
     },
-    "target-dir": "SugiPHP/Config",
     "minimum-stability": "dev"
 }
