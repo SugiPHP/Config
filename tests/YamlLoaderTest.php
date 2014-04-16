@@ -32,7 +32,7 @@ class YamlLoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.yml"));
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
-	
+
 	public function testLoaderWithLocator()
 	{
 		$testArr = include(__DIR__."/config/test.php");
@@ -44,5 +44,5 @@ class YamlLoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($testArr, $loader->load("config/test"));
 		$this->assertEquals($testArr, $loader->load("test.yml"));
 		$this->assertEquals($testArr, $loader->load("test"));
-	}	
+	}
 }

@@ -28,12 +28,12 @@ class IniLoaderTest extends PHPUnit_Framework_TestCase
 	public function testAddExtension()
 	{
 		$testArr = array("istr" => "value", "iarr" => array("sub" => "subvalue", "nokey"), "inull" => null, "iint" => 42, "izero" => 0, "ifalse" => false, "itrue" => true);
-		
+
 		$loader = new Loader();
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.ini"));
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
-	
+
 	public function testLoaderWithLocator()
 	{
 		$testArr = array("istr" => "value", "iarr" => array("sub" => "subvalue", "nokey"), "inull" => null, "iint" => 42, "izero" => 0, "ifalse" => false, "itrue" => true);
@@ -45,5 +45,5 @@ class IniLoaderTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($testArr, $loader->load("config/test"));
 		$this->assertEquals($testArr, $loader->load("test.ini"));
 		$this->assertEquals($testArr, $loader->load("test"));
-	}	
+	}
 }

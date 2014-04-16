@@ -9,5 +9,5 @@
 namespace SugiPHP\Config;
 
 class Exception extends \Exception
-{	
+{
 }

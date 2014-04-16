@@ -138,7 +138,8 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array("bar" => array("baz" => "BAZ")), $config->get("foo"));
 	}
 
-	public function testSetWithDotNotationDeepFromBegining() {
+	public function testSetWithDotNotationDeepFromBegining()
+	{
 		$config = new Config();
 		$config->set("foo", "foovalue");
 		$config->set("foo.bar", "barvalue");
