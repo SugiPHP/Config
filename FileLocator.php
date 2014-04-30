@@ -66,6 +66,32 @@ class FileLocator implements LocatorInterface
 	}
 
 	/**
+	 * Remove last search path.
+	 */
+	public function popPath()
+	{
+		$this->paths = array_pop($this->paths);
+	}
+
+	/**
+	 * Prepend one path to the beginning of the search paths.
+	 *
+	 * @param string $path
+	 */
+	public function unshiftPath($path)
+	{
+		$this->paths = array_unshift(rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
+	}
+
+	/**
+	 * Remove first path from the search paths.
+	 */
+	public function shiftPath()
+	{
+		$this->paths = array_shift($this->paths);
+	}
+
+	/**
 	 * Returns all registered search paths.
 	 *
 	 * @return array
