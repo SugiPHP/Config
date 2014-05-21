@@ -80,7 +80,7 @@ class FileLocator implements LocatorInterface
 	 */
 	public function unshiftPath($path)
 	{
-		$this->paths = array_unshift(rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
+		array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
 	}
 
 	/**
