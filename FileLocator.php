@@ -70,7 +70,7 @@ class FileLocator implements LocatorInterface
 	 */
 	public function popPath()
 	{
-		$this->paths = array_pop($this->paths);
+		array_pop($this->paths);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class FileLocator implements LocatorInterface
 	 */
 	public function shiftPath()
 	{
-		$this->paths = array_shift($this->paths);
+		array_shift($this->paths);
 	}
 
 	/**
