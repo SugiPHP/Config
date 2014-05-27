@@ -109,6 +109,14 @@ $locator = new FileLocator("/path/to/your/app/config/");
 $locator = new FileLocator(array("/path/to/your/app/config", "/other/config/path/"));
 // add additional path
 $locator->addPath("/somewhere/else/config/");
+// Note that later method adds a path to the end. Locator will search in it only if the
+// file was NOT found in the previously added paths. If you wish to add a path in the
+// beginning of the search paths use:
+$locator->prependPath("/first/search/path/");
+// remove a search path from the end of the search paths:
+$locator->popPath();
+// remove a path from the beginning of the search paths:
+$locator->shiftPath();
 ```
 
 

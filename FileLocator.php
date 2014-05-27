@@ -78,9 +78,17 @@ class FileLocator implements LocatorInterface
 	 *
 	 * @param string $path
 	 */
-	public function unshiftPath($path)
+	public function prependPath($path)
 	{
 		array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
+	}
+
+	/**
+	 * Alias of prepend() method
+	 */
+	public function unshiftPath($path)
+	{
+		return $this->prependPath($path);
 	}
 
 	/**
