@@ -2,7 +2,6 @@ Config
 ======
 
 [![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5330315e-2b6d-42c7-98ee-0436d99998d2/mini.png)](https://insight.sensiolabs.com/projects/5330315e-2b6d-42c7-98ee-0436d99998d2)
 [![Quality Score](https://scrutinizer-ci.com/g/SugiPHP/Config/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SugiPHP/Config/)
 
 
@@ -148,3 +147,5 @@ return json_decode(file_get_contents("/path/to/app/config/database.json"), true)
 Another example is if some of your app configurations are stored not in files but lets say in a NoSQL storage. So you can
 write your custom loader which will connect to the NoSQL DB, fetch items and return them as array. And that's really easy,
 and the better thing is that your existing code will not need any modification.
+
+You can peek in [Database Loader](Test/Db1Loader.php) for a simple database configuration store example.

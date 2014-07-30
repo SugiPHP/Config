@@ -14,7 +14,6 @@ use SugiPHP\Config\FileLocator;
 use SugiPHP\Config\NativeLoader;
 use SugiPHP\Config\JsonLoader;
 use SugiPHP\Config\IniLoader;
-use SugiPHP\Config\XmlLoader;
 use PHPUnit_Framework_TestCase;
 
 class ConfigTest extends PHPUnit_Framework_TestCase
@@ -53,6 +52,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	public function test3Loaders()
 	{
 		$locator = new FileLocator(array(__DIR__, __DIR__."/config"));
+		$loader = array();
 		$loader[] = new IniLoader($locator); // INI loader is FIRST.
 		$loader[] = new JsonLoader($locator);
 		$loader[] = new NativeLoader($locator);

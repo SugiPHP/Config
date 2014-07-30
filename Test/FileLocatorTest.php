@@ -16,60 +16,106 @@ class FileLocatorTest extends PHPUnit_Framework_TestCase
 {
 	public function testCreate()
 	{
-		$loader = new Locator("");
+		$this->assertNotNull(new Locator(""));
 	}
 
 	public function testLocateSelfNoSearchPaths()
 	{
-		$loader = new Locator("");
-		$this->assertEquals(__FILE__, $loader->locate(__FILE__));
+		$locator = new Locator("");
+		$this->assertEquals(__FILE__, $locator->locate(__FILE__));
 	}
 
 	public function testLocateSelfWithSearchPaths()
 	{
-		$loader = new Locator(array("/tmp", "/temp", __DIR__));
-		$this->assertEquals(__FILE__, $loader->locate(__FILE__));
+		$locator = new Locator(array("/tmp", "/temp", __DIR__));
+		$this->assertEquals(__FILE__, $locator->locate(__FILE__));
 	}
 
 	public function testLocateSelfFileName()
 	{
-		$loader = new Locator(__DIR__);
-		$this->assertEquals(__FILE__, $loader->locate(basename(__FILE__)));
+		$locator = new Locator(__DIR__);
+		$this->assertEquals(__FILE__, $locator->locate(basename(__FILE__)));
 	}
 
 	public function testLocateSelfNotFoundInUnknownDir()
 	{
-		$loader = new Locator(__DIR__.mt_rand());
-		$this->assertNull($loader->locate(basename(__FILE__)));
+		$locator = new Locator(__DIR__.mt_rand());
+		$this->assertNull($locator->locate(basename(__FILE__)));
 	}
 
 	public function testUnknownFileInThisDir()
 	{
-		$loader = new Locator(__DIR__);
-		$this->assertNull($loader->locate(md5(mt_rand())));
+		$locator = new Locator(__DIR__);
+		$this->assertNull($locator->locate(md5(mt_rand())));
 	}
 
 	public function testNoFile()
 	{
-		$loader = new Locator(__DIR__);
-		$this->assertNull($loader->locate(""));
+		$locator = new Locator(__DIR__);
+		$this->assertNull($locator->locate(""));
 	}
 
 	public function testDontFindTestFile()
 	{
-		$loader = new Locator(__DIR__);
-		$this->assertNull($loader->locate("test.php"));
+		$locator = new Locator(__DIR__);
+		$this->assertNull($locator->locate("test.php"));
 	}
 
 	public function testFindTestFileOneSearchPath()
 	{
-		$loader = new Locator(__DIR__."/config");
-		$this->assertEquals(__DIR__."/config/test.php", $loader->locate("test.php"));
+		$locator = new Locator(__DIR__."/config");
+		$this->assertEquals(__DIR__."/config/test.php", $locator->locate("test.php"));
 	}
 
 	public function testFindTestFileTwoSearchPaths()
 	{
-		$loader = new Locator(array(__DIR__, __DIR__."/config"));
-		$this->assertEquals(__DIR__."/config/test.php", $loader->locate("test.php"));
+		$locator = new Locator(array(__DIR__, __DIR__."/config"));
+		$this->assertEquals(__DIR__."/config/test.php", $locator->locate("test.php"));
+	}
+
+	public function testAddPath()
+	{
+		$locator = new Locator(__DIR__."/config");
+		// test2.php not present in /config path
+		$this->assertNull($locator->locate("test2.php"));
+		// adding /config2 path
+		$locator->addPath(__DIR__."/config2");
+		// test2.php now present
+		$this->assertEquals(__DIR__."/config2/test2.php", $locator->locate("test2.php"));
+		$this->assertEquals(__DIR__."/config/test.php", $locator->locate("test.php"));
+		// find first instance of test2.json
+		$this->assertEquals(__DIR__."/config/test2.json", $locator->locate("test2.json"));
+	}
+
+	public function testPopPath()
+	{
+		$locator = new Locator(array(__DIR__."/config", __DIR__."/config2"));
+		// test2.php is only in the second (config2) path
+		$this->assertEquals(__DIR__."/config2/test2.php", $locator->locate("test2.php"));
+		// removing second search path
+		$locator->popPath();
+		$this->assertNull($locator->locate("test2.php"));
+		$this->assertEquals(__DIR__."/config/test.php", $locator->locate("test.php"));
+		// removing first search path
+		$locator->popPath();
+		$this->assertNull($locator->locate("test.php"));
+	}
+
+	public function testPrependPath()
+	{
+		$locator = new Locator(__DIR__."/config");
+		$this->assertNull($locator->locate("test2.php"));
+		$this->assertEquals(__DIR__."/config/test2.json", $locator->locate("test2.json"));
+		$locator->prependPath(__DIR__."/config2");
+		$this->assertEquals(__DIR__."/config2/test2.php", $locator->locate("test2.php"));
+		$this->assertEquals(__DIR__."/config2/test2.json", $locator->locate("test2.json"));
+	}
+
+	public function testShiftPath()
+	{
+		$locator = new Locator(array(__DIR__."/config", __DIR__."/config2"));
+		$this->assertEquals(__DIR__."/config/test2.json", $locator->locate("test2.json"));
+		$locator->shiftPath();
+		$this->assertEquals(__DIR__."/config2/test2.json", $locator->locate("test2.json"));
 	}
 }
