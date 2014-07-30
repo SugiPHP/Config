@@ -7,12 +7,15 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
+namespace SugiPHP\Config\Test;
+
 use SugiPHP\Config\Config;
 use SugiPHP\Config\FileLocator;
 use SugiPHP\Config\NativeLoader;
 use SugiPHP\Config\JsonLoader;
 use SugiPHP\Config\IniLoader;
 use SugiPHP\Config\XmlLoader;
+use PHPUnit_Framework_TestCase;
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {

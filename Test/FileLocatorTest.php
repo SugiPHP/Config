@@ -7,7 +7,10 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
+namespace SugiPHP\Config\Test;
+
 use SugiPHP\Config\FileLocator as Locator;
+use PHPUnit_Framework_TestCase;
 
 class FileLocatorTest extends PHPUnit_Framework_TestCase
 {

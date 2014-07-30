@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false" 
+<phpunit backupGlobals="false"
          backupStaticAttributes="false"
          bootstrap="vendor/autoload.php"
          colors="true"
@@ -12,7 +12,7 @@
 >
     <testsuites>
         <testsuite name="SugiPHP Config Component Test Suite">
-            <directory>./tests/</directory>
+            <directory>./Test/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

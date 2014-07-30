@@ -7,12 +7,15 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-use SugiPHP\Config\XmlLoader as Loader;
-use SugiPHP\Config\FileLocator as Locator;
+namespace SugiPHP\Config\Test;
 
-class XmlLoaderTest extends PHPUnit_Framework_TestCase
+use SugiPHP\Config\NativeLoader as Loader;
+use SugiPHP\Config\FileLocator as Locator;
+use PHPUnit_Framework_TestCase;
+
+class NativeLoaderTest extends PHPUnit_Framework_TestCase
 {
-	public function testJsonLoaderIsLoaderInterface()
+	public function testNativeLoaderIsLoaderInterface()
 	{
 		$loader = new Loader();
 		$this->assertInstanceOf("\SugiPHP\Config\LoaderInterface", $loader);
@@ -22,25 +25,27 @@ class XmlLoaderTest extends PHPUnit_Framework_TestCase
 	{
 		$loader = new Loader();
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertNull($loader->load("nosuchfile.xml"));
+		$this->assertNull($loader->load("nosuchfile.php"));
 	}
 
-	public function testAddExtension()
+	public function testAddPhp()
 	{
 		$loader = new Loader();
-		$this->assertEquals($loader->load(__DIR__."/config/test"), $loader->load(__DIR__."/config/test.xml"));
+		$testArr = include(__DIR__."/config/test.php");
+		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.php"));
+		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
 
 	public function testLoaderWithLocator()
 	{
-		$testArr = array("str" => "value", "arr" => array(array("sub" => "subvalue"), "nokey"), "null" => "null", "int" => "42", "zero" => "0", "false" => "false", "true" => "true");
+		$testArr = include(__DIR__."/config/test.php");
 
 		$locator = new Locator(array(__DIR__, __DIR__."/config"));
 		$loader = new Loader($locator);
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertEquals($testArr, $loader->load("config/test.xml"));
+		$this->assertEquals($testArr, $loader->load("config/test.php"));
 		$this->assertEquals($testArr, $loader->load("config/test"));
-		$this->assertEquals($testArr, $loader->load("test.xml"));
+		$this->assertEquals($testArr, $loader->load("test.php"));
 		$this->assertEquals($testArr, $loader->load("test"));
 	}
 }

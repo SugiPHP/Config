@@ -7,12 +7,15 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-use SugiPHP\Config\NativeLoader as Loader;
-use SugiPHP\Config\FileLocator as Locator;
+namespace SugiPHP\Config\Test;
 
-class NativeLoaderTest extends PHPUnit_Framework_TestCase
+use SugiPHP\Config\YamlLoader as Loader;
+use SugiPHP\Config\FileLocator as Locator;
+use PHPUnit_Framework_TestCase;
+
+class YamlLoaderTest extends PHPUnit_Framework_TestCase
 {
-	public function testNativeLoaderIsLoaderInterface()
+	public function testJsonLoaderIsLoaderInterface()
 	{
 		$loader = new Loader();
 		$this->assertInstanceOf("\SugiPHP\Config\LoaderInterface", $loader);
@@ -22,17 +25,17 @@ class NativeLoaderTest extends PHPUnit_Framework_TestCase
 	{
 		$loader = new Loader();
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertNull($loader->load("nosuchfile.php"));
+		$this->assertNull($loader->load("nosuchfile.yml"));
 	}
 
-	public function testAddPhp()
+	public function testAddExtension()
 	{
 		$loader = new Loader();
 		$testArr = include(__DIR__."/config/test.php");
-		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.php"));
+		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.yml"));
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
-	
+
 	public function testLoaderWithLocator()
 	{
 		$testArr = include(__DIR__."/config/test.php");
@@ -40,9 +43,9 @@ class NativeLoaderTest extends PHPUnit_Framework_TestCase
 		$locator = new Locator(array(__DIR__, __DIR__."/config"));
 		$loader = new Loader($locator);
 		$this->assertNull($loader->load("nosuchfile"));
-		$this->assertEquals($testArr, $loader->load("config/test.php"));
+		$this->assertEquals($testArr, $loader->load("config/test.yml"));
 		$this->assertEquals($testArr, $loader->load("config/test"));
-		$this->assertEquals($testArr, $loader->load("test.php"));
+		$this->assertEquals($testArr, $loader->load("test.yml"));
 		$this->assertEquals($testArr, $loader->load("test"));
-	}	
+	}
 }
