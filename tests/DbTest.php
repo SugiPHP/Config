@@ -1,8 +1,8 @@
 <?php
 
-namespace SugiPHP\Config\Test;
+namespace SugiPHP\Config;
 
-use SugiPHP\Config\Test\Db1Loader;
+use SugiPHP\Config\tests\Db1Loader;
 use SugiPHP\Config\Config;
 use PHPUnit_Framework_TestCase;
 

@@ -7,7 +7,7 @@
  * @license    http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config\Test;
+namespace SugiPHP\Config;
 
 use SugiPHP\Config\FileLocator as Locator;
 use PHPUnit_Framework_TestCase;
