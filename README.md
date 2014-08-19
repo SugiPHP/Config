@@ -148,4 +148,4 @@ Another example is if some of your app configurations are stored not in files bu
 write your custom loader which will connect to the NoSQL DB, fetch items and return them as array. And that's really easy,
 and the better thing is that your existing code will not need any modification.
 
-You can peek in [Database Loader](Test/Db1Loader.php) for a simple database configuration store example.
+You can peek in [Database Loader](tests/Db1Loader.php) for a simple database configuration store example.
