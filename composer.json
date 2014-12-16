@@ -14,7 +14,7 @@
         "php": ">=5.3"
     },
     "require-dev": {
-        "symfony/yaml": "dev-master"
+        "symfony/yaml": "~2.2"
     },
     "suggest": {
         "symfony/yaml": "Symfony Yaml Component to use .yml config files"
