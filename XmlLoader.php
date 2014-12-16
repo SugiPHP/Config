@@ -1,9 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage Config
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * XML file loader.
+ *
+ * @package SugiPHP.Config
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;
@@ -17,6 +18,9 @@ class XmlLoader implements LoaderInterface
 		$this->locator = $locator;
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function load($resource)
 	{
 		// check the extension. If it's not provided we'll add .xml

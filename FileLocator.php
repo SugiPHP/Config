@@ -1,9 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage Config
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * File locater
+ *
+ * @package SugiPHP.Config
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;
@@ -23,6 +24,8 @@ class FileLocator implements LocatorInterface
 	 * File Locator creator.
 	 *
 	 * @param array|string $paths
+	 *
+	 * @return void
 	 */
 	public function __construct($paths)
 	{
@@ -30,7 +33,7 @@ class FileLocator implements LocatorInterface
 	}
 
 	/**
-	 * @inheritdoc
+	 * {@inheritdoc}
 	 */
 	public function locate($resource)
 	{
@@ -56,6 +59,8 @@ class FileLocator implements LocatorInterface
 	 * Adds a search paths.
 	 *
 	 * @param string|array $path or several paths
+	 *
+	 * @return void
 	 */
 	public function addPath($path)
 	{
@@ -67,6 +72,8 @@ class FileLocator implements LocatorInterface
 
 	/**
 	 * Remove last search path.
+	 *
+	 * @return void
 	 */
 	public function popPath()
 	{
@@ -77,6 +84,8 @@ class FileLocator implements LocatorInterface
 	 * Prepend one path to the beginning of the search paths.
 	 *
 	 * @param string $path
+	 *
+	 * @return void
 	 */
 	public function prependPath($path)
 	{
@@ -85,6 +94,8 @@ class FileLocator implements LocatorInterface
 
 	/**
 	 * Alias of prepend() method
+	 *
+	 * @see prepend()
 	 */
 	public function unshiftPath($path)
 	{
@@ -93,6 +104,8 @@ class FileLocator implements LocatorInterface
 
 	/**
 	 * Remove first path from the search paths.
+	 *
+	 * @return void
 	 */
 	public function shiftPath()
 	{
@@ -112,7 +125,8 @@ class FileLocator implements LocatorInterface
 	/**
 	 * Check if the file/path is given with absolute path.
 	 *
-	 * @param  string $path
+	 * @param string $path
+	 *
 	 * @return bool
 	 */
 	protected function isFullPath($path)

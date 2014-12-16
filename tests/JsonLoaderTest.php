@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage Config
- * @category   tests
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * Tests for JsonLoader class.
+ *
+ * @package SugiPHP.Config
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;
@@ -31,14 +31,14 @@ class JsonLoaderTest extends PHPUnit_Framework_TestCase
 	public function testAddExtension()
 	{
 		$loader = new Loader();
-		$testArr = include(__DIR__."/config/test.php");
+		$testArr = include __DIR__."/config/test.php";
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test.json"));
 		$this->assertEquals($testArr, $loader->load(__DIR__."/config/test"));
 	}
 
 	public function testLoaderWithLocator()
 	{
-		$testArr = include(__DIR__."/config/test.php");
+		$testArr = include __DIR__."/config/test.php";
 
 		$locator = new Locator(array(__DIR__, __DIR__."/config"));
 		$loader = new Loader($locator);

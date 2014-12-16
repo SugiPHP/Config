@@ -1,10 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage Config
- * @category   tests
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * Tests for Config class.
+ *
+ * @package SugiPHP.Config
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config\Test;
@@ -36,7 +36,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$loader = new NativeLoader($locator);
 		$config = new Config($loader);
 
-		$this->assertEquals(include(__DIR__."/config/test.php"), $config->get("test"));
+		$this->assertEquals(include __DIR__."/config/test.php", $config->get("test"));
 		$this->assertSame(42, $config->get("test.int"));
 	}
 

@@ -1,9 +1,10 @@
 <?php
 /**
- * @package    SugiPHP
- * @subpackage Config
- * @author     Plamen Popov <tzappa@gmail.com>
- * @license    http://opensource.org/licenses/mit-license.php (MIT License)
+ * Config class.
+ *
+ * @package SugiPHP.Config
+ * @author  Plamen Popov <tzappa@gmail.com>
+ * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;
@@ -14,7 +15,8 @@ class Config
 	protected $loaders = array();
 
 	/**
-	 * Creates a Config instance
+	 * Creates a Config instance.
+	 *
 	 * @param array|LoaderInterface|null $loaders array of LoaderInterface
 	 */
 	public function __construct($loaders = null)
@@ -39,8 +41,9 @@ class Config
 	 * Returns loaded config option. If the key is not found it checks if registered loaders can
 	 * find the key.
 	 *
-	 * @param  string $key
-	 * @param  mixed $default - the value to be returned if the $key is not found
+	 * @param string $key
+	 * @param mixed $default - the value to be returned if the $key is not found
+	 *
 	 * @return mixed
 	 */
 	public function get($key = null, $default = null)
@@ -65,6 +68,8 @@ class Config
 	 *
 	 * @param string $key
 	 * @param mixed $value
+	 *
+	 * @return void
 	 */
 	public function set($key, $value)
 	{
@@ -94,8 +99,9 @@ class Config
 	/**
 	 * Tries to find needed resource by looping each of registered loaders.
 	 *
-	 * @param  string $resource
-	 * @return array
+	 * @param string $resource
+	 *
+	 * @return array|null Returns null if resource is not found
 	 */
 	protected function discover($resource)
 	{
@@ -110,8 +116,9 @@ class Config
 	/**
 	 * Search for a key with dot notation in the array. If the key is not found NULL is returned
 	 *
-	 * @param  string $key
-	 * @return mixed
+	 * @param string $key
+	 *
+	 * @return mixed|null Returns NULL if the key is not found.
 	 */
 	protected function parse($key)
 	{
