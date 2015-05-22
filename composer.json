@@ -23,6 +23,5 @@
         "psr-4": {
             "SugiPHP\\Config\\": ""
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

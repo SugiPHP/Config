@@ -14,12 +14,12 @@ namespace SugiPHP\Config;
  */
 interface LocatorInterface
 {
-	/**
-	 * Search for a particular resource.
-	 *
-	 * @param string $resource
-	 *
-	 * @return string|null
-	 */
-	public function locate($resource);
+    /**
+     * Search for a particular resource.
+     *
+     * @param string $resource
+     *
+     * @return string|null
+     */
+    public function locate($resource);
 }

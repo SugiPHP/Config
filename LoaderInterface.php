@@ -14,12 +14,12 @@ namespace SugiPHP\Config;
  */
 interface LoaderInterface
 {
-	/**
-	 * Tries to load a resource.
-	 *
-	 * @param string $resource
-	 *
-	 * @return array|null Returns NULL if the resource was not found
-	 */
-	public function load($resource);
+    /**
+     * Tries to load a resource.
+     *
+     * @param string $resource
+     *
+     * @return array|null Returns NULL if the resource was not found
+     */
+    public function load($resource);
 }
