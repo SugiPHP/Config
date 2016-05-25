@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config\tests;
+namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\LoaderInterface;
 use SQLite3;

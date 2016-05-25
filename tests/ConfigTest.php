@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config\Test;
+namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\Config;
 use SugiPHP\Config\FileLocator;
@@ -28,6 +28,20 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $config = new Config();
         $this->assertNull($config->get("foo"));
         $this->assertNull($config->get("foo.bar"));
+    }
+
+    public function testGetNullReturnsDefault()
+    {
+        $config = new Config();
+        $this->assertNull($config->get(null));
+        $this->assertEquals("default", $config->get(null, "default"));
+    }
+
+    public function testGetEmptyReturnsDefault()
+    {
+        $config = new Config();
+        $this->assertNull($config->get(""));
+        $this->assertEquals("default", $config->get("", "default"));
     }
 
     public function testNativeLoader()

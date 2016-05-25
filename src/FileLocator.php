@@ -81,25 +81,23 @@ class FileLocator implements LocatorInterface
     }
 
     /**
-     * Prepend one path to the beginning of the search paths.
+     * @deprecated Use unshiftPath() method
+     */
+    public function prependPath($path)
+    {
+        return $this->unshiftPath($path);
+    }
+
+    /**
+     * Prepends one path to the beginning of the search paths.
      *
      * @param string $path
      *
      * @return void
      */
-    public function prependPath($path)
-    {
-        array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
-    }
-
-    /**
-     * Alias of prepend() method
-     *
-     * @see prepend()
-     */
     public function unshiftPath($path)
     {
-        return $this->prependPath($path);
+        array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
     }
 
     /**

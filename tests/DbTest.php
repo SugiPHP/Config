@@ -7,9 +7,9 @@
  * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config;
+namespace SugiPHP\Config\Tests;
 
-use SugiPHP\Config\tests\Db1Loader;
+use SugiPHP\Config\Tests\Db1Loader;
 use SugiPHP\Config\Config;
 use PHPUnit_Framework_TestCase;
 

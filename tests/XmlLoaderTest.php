@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config;
+namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\XmlLoader as Loader;
 use SugiPHP\Config\FileLocator as Locator;

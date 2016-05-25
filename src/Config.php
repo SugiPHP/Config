@@ -46,10 +46,10 @@ class Config
      *
      * @return mixed
      */
-    public function get($key = null, $default = null)
+    public function get($key, $default = null)
     {
-        if (is_null($key)) {
-            return $this->registry;
+        if (empty($key)) {
+            return $default;
         }
 
         $parts = explode(".", $key);

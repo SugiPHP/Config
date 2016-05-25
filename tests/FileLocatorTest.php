@@ -7,7 +7,7 @@
  * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
-namespace SugiPHP\Config;
+namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\FileLocator as Locator;
 use PHPUnit_Framework_TestCase;
@@ -101,12 +101,12 @@ class FileLocatorTest extends PHPUnit_Framework_TestCase
         $this->assertNull($locator->locate("test.php"));
     }
 
-    public function testPrependPath()
+    public function testUnshiftPath()
     {
         $locator = new Locator(__DIR__."/config");
         $this->assertNull($locator->locate("test2.php"));
         $this->assertEquals(__DIR__."/config/test2.json", $locator->locate("test2.json"));
-        $locator->prependPath(__DIR__."/config2");
+        $locator->unshiftPath(__DIR__."/config2");
         $this->assertEquals(__DIR__."/config2/test2.php", $locator->locate("test2.php"));
         $this->assertEquals(__DIR__."/config2/test2.json", $locator->locate("test2.json"));
     }

@@ -2,7 +2,7 @@
     "name": "sugiphp/config",
     "type": "library",
     "description": "SugiPHP Config Component",
-    "keywords": ["config", "configuration", "PHP", "JSON", "yaml", "XML", "INI"],
+    "keywords": ["config", "configuration", "php", "json", "yaml", "xml", "ini"],
     "license": "MIT",
     "authors": [
         {
@@ -14,14 +14,19 @@
         "php": ">=5.3"
     },
     "require-dev": {
-        "symfony/yaml": "~2.2"
+        "symfony/yaml": ">2.2"
     },
     "suggest": {
         "symfony/yaml": "Symfony Yaml Component to use .yml config files"
     },
     "autoload": {
         "psr-4": {
-            "SugiPHP\\Config\\": ""
+            "SugiPHP\\Config\\": "src\\"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SugiPHP\\Config\\Tests\\": "tests\\"
         }
     }
 }
