@@ -1,7 +1,6 @@
 # Config
 
 [![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
-[![Quality Score](https://scrutinizer-ci.com/g/SugiPHP/Config/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SugiPHP/Config/)
 
 ## Installation
 
