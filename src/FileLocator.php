@@ -1,10 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * File locater
- *
- * @package SugiPHP.Config
- * @author  Plamen Popov <tzappa@gmail.com>
- * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;

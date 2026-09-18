@@ -1,15 +1,10 @@
 <?php
-/**
- * Config class.
- *
- * @package SugiPHP.Config
- * @author  Plamen Popov <tzappa@gmail.com>
- * @license http://opensource.org/licenses/mit-license.php (MIT License)
- */
+
+declare(strict_types=1);
 
 namespace SugiPHP\Config;
 
-class Config
+class Config implements ConfigInterface
 {
     protected $registry = array();
     protected $loaders = array();
@@ -38,61 +33,49 @@ class Config
     }
 
     /**
-     * Returns loaded config option. If the key is not found it checks if registered loaders can
-     * find the key.
-     *
-     * @param string $key
-     * @param mixed $default - the value to be returned if the $key is not found
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
-        if (empty($key)) {
-            return $default;
-        }
-
-        $parts = explode(".", $key);
-        $file = array_shift($parts);
-
-        if (!isset($this->registry[$file])) {
-            $this->registry[$file] = $this->discover($file);
-        }
+        $this->load($key);
         $res = $this->parse($key);
 
         return is_null($res) ? $default : $res;
     }
 
     /**
-     * Registers a config variable
+     * {@inheritdoc}
+     */
+    public function has(string $key): bool
+    {
+        $this->load($key);
+
+        $values = $this->registry;
+        foreach (explode(".", $key) as $part) {
+            if (!is_array($values) || !array_key_exists($part, $values)) {
+                return false;
+            }
+            $values = $values[$part];
+        }
+
+        return !is_null($values);
+    }
+
+    /**
+     * Makes sure the configuration file for the given (possibly dotted) key is
+     * discovered and loaded into the registry.
      *
      * @param string $key
-     * @param mixed $value
      *
      * @return void
      */
-    public function set($key, $value)
+    protected function load(string $key)
     {
-        if (empty($key)) {
-            throw new Exception("Key must be set");
-        }
+        $parts = explode(".", $key);
+        $file = array_shift($parts);
 
-        $parts = array_reverse(explode(".", $key));
-        $file = array_pop($parts);
-
-        // we'll try to load a configuration file (if exists)
         if (!isset($this->registry[$file])) {
             $this->registry[$file] = $this->discover($file);
-        }
-
-        foreach ($parts as $part) {
-            $value = array($part => $value);
-        }
-
-        if (is_array($this->registry[$file]) && (is_array($value))) {
-            $this->registry[$file] = array_replace_recursive($this->registry[$file], $value);
-        } else {
-            $this->registry[$file] = $value;
         }
     }
 
@@ -125,9 +108,6 @@ class Config
         $values = $this->registry;
         $parts = explode(".", $key);
         foreach ($parts as $part) {
-            if ($part === "") {
-                return $values;
-            }
             if (!is_array($values) || !array_key_exists($part, $values)) {
                 return ;
             }

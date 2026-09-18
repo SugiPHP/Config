@@ -1,10 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Locator interface. All locators must implement this interface.
- *
- * @package SugiPHP.Config
- * @author  Plamen Popov <tzappa@gmail.com>
- * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config;

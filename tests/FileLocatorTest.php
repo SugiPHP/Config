@@ -1,10 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Tests for FileLocator class.
- *
- * @package SugiPHP.Config
- * @author  Plamen Popov <tzappa@gmail.com>
- * @license http://opensource.org/licenses/mit-license.php (MIT License)
  */
 
 namespace SugiPHP\Config\Tests;
@@ -46,7 +45,7 @@ class FileLocatorTest extends TestCase
     public function testUnknownFileInThisDir()
     {
         $locator = new Locator(__DIR__);
-        $this->assertNull($locator->locate(md5(mt_rand())));
+        $this->assertNull($locator->locate(md5((string) mt_rand())));
     }
 
     public function testNoFile()
