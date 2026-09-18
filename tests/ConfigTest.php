@@ -14,9 +14,9 @@ use SugiPHP\Config\FileLocator;
 use SugiPHP\Config\NativeLoader;
 use SugiPHP\Config\JsonLoader;
 use SugiPHP\Config\IniLoader;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends TestCase
 {
     public function testConfigCreate()
     {
@@ -209,7 +209,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     {
         $config = new Config();
 
-        $this->setExpectedException("SugiPHP\Config\Exception");
+        $this->expectException(\SugiPHP\Config\Exception::class);
         $config->set(null, 1);
     }
 }

@@ -13,7 +13,7 @@ class XmlLoader implements LoaderInterface
 {
     protected $locator;
 
-    public function __construct(LocatorInterface $locator = null)
+    public function __construct(?LocatorInterface $locator = null)
     {
         $this->locator = $locator;
     }

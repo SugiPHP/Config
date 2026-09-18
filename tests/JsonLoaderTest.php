@@ -11,9 +11,9 @@ namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\JsonLoader as Loader;
 use SugiPHP\Config\FileLocator as Locator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class JsonLoaderTest extends PHPUnit_Framework_TestCase
+class JsonLoaderTest extends TestCase
 {
     public function testJsonLoaderIsLoaderInterface()
     {

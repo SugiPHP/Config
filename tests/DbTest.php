@@ -11,9 +11,9 @@ namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\Tests\Db1Loader;
 use SugiPHP\Config\Config;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class DbTest extends PHPUnit_Framework_TestCase
+class DbTest extends TestCase
 {
     public function testOneTable()
     {

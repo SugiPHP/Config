@@ -11,9 +11,9 @@ namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\IniLoader as Loader;
 use SugiPHP\Config\FileLocator as Locator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class IniLoaderTest extends PHPUnit_Framework_TestCase
+class IniLoaderTest extends TestCase
 {
     public function testJsonLoaderIsLoaderInterface()
     {

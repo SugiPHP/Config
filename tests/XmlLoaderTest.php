@@ -11,9 +11,9 @@ namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\XmlLoader as Loader;
 use SugiPHP\Config\FileLocator as Locator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class XmlLoaderTest extends PHPUnit_Framework_TestCase
+class XmlLoaderTest extends TestCase
 {
     public function testJsonLoaderIsLoaderInterface()
     {

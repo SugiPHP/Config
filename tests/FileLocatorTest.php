@@ -10,9 +10,9 @@
 namespace SugiPHP\Config\Tests;
 
 use SugiPHP\Config\FileLocator as Locator;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FileLocatorTest extends PHPUnit_Framework_TestCase
+class FileLocatorTest extends TestCase
 {
     public function testCreate()
     {

@@ -1,11 +1,9 @@
 # Config
 
-[![Build Status](https://travis-ci.org/SugiPHP/Config.png)](https://travis-ci.org/SugiPHP/Config)
-
 ## Installation
 
 ```shell
-composer require sugiphp/config ~1.0
+composer require sugiphp/config ~1.1
 ```
 
 SugiPHP\Config is designed to simplify access to configuration settings. Config class natively supports reading and parsing configuration options from several file types (php, json, yaml, ini, xml) stored in one or several locations in your project. Config::get("file.key") method automatically finds configuration file, loads it, parses it and then searches for the key and returns it's value. If the file or the key is not found gracefully returns NULL or some other default value if it is provided like a second parameter.
