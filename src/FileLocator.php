@@ -28,7 +28,7 @@ class FileLocator implements LocatorInterface
      */
     public function __construct($paths)
     {
-        $this->addPath($paths);
+        $this->pushPaths($paths);
     }
 
     /**
@@ -60,31 +60,55 @@ class FileLocator implements LocatorInterface
      * @param string|array $path or several paths
      *
      * @return void
+     *
+     * @deprecated since 2.0.0, mutating the search paths after construction will
+     *             be removed in a future version. Pass all search paths to the
+     *             constructor instead.
      */
     public function addPath($path)
     {
-        $paths = (array) $path;
-        foreach ($paths as $path) {
-            $this->paths[] = rtrim($path, "\\/") . DIRECTORY_SEPARATOR;
-        }
+        @trigger_error(
+            sprintf('%s::addPath() is deprecated since 2.0.0 and will be removed in a future version.', self::class),
+            E_USER_DEPRECATED
+        );
+
+        $this->pushPaths($path);
     }
 
     /**
      * Remove last search path.
      *
      * @return void
+     *
+     * @deprecated since 2.0.0, mutating the search paths after construction will
+     *             be removed in a future version.
      */
     public function popPath()
     {
+        @trigger_error(
+            sprintf('%s::popPath() is deprecated since 2.0.0 and will be removed in a future version.', self::class),
+            E_USER_DEPRECATED
+        );
+
         array_pop($this->paths);
     }
 
     /**
-     * @deprecated Use unshiftPath() method
+     * @deprecated since 2.0.0, use unshiftPath() instead. Will be removed in a
+     *             future version.
      */
     public function prependPath($path)
     {
-        return $this->unshiftPath($path);
+        @trigger_error(
+            sprintf(
+                '%s::prependPath() is deprecated since 2.0.0, use %s::unshiftPath() instead. It will be removed in a future version.',
+                self::class,
+                self::class
+            ),
+            E_USER_DEPRECATED
+        );
+
+        $this->pushPathToFront($path);
     }
 
     /**
@@ -93,20 +117,66 @@ class FileLocator implements LocatorInterface
      * @param string $path
      *
      * @return void
+     *
+     * @deprecated since 2.0.0, mutating the search paths after construction will
+     *             be removed in a future version. Pass all search paths to the
+     *             constructor instead.
      */
     public function unshiftPath($path)
     {
-        array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
+        @trigger_error(
+            sprintf('%s::unshiftPath() is deprecated since 2.0.0 and will be removed in a future version.', self::class),
+            E_USER_DEPRECATED
+        );
+
+        $this->pushPathToFront($path);
     }
 
     /**
      * Remove first path from the search paths.
      *
      * @return void
+     *
+     * @deprecated since 2.0.0, mutating the search paths after construction will
+     *             be removed in a future version.
      */
     public function shiftPath()
     {
+        @trigger_error(
+            sprintf('%s::shiftPath() is deprecated since 2.0.0 and will be removed in a future version.', self::class),
+            E_USER_DEPRECATED
+        );
+
         array_shift($this->paths);
+    }
+
+    /**
+     * Adds one or more search paths to the end of the search paths, without
+     * triggering the addPath() deprecation notice.
+     *
+     * @param string|array $path or several paths
+     *
+     * @return void
+     */
+    protected function pushPaths($path)
+    {
+        $paths = (array) $path;
+        foreach ($paths as $path) {
+            $this->paths[] = rtrim($path, "\\/") . DIRECTORY_SEPARATOR;
+        }
+    }
+
+    /**
+     * Adds one search path to the beginning of the search paths, without
+     * triggering the unshiftPath()/prependPath() deprecation notice.
+     *
+     * @param string $path
+     *
+     * @return void
+     */
+    protected function pushPathToFront($path)
+    {
+        array_unshift($this->paths, rtrim($path, "\\/") . DIRECTORY_SEPARATOR);
     }
 
     /**

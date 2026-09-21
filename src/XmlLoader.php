@@ -20,7 +20,7 @@ class XmlLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($resource)
+    public function load(string $resource): ?array
     {
         // check the extension. If it's not provided we'll add .xml
         if (pathinfo($resource, PATHINFO_EXTENSION) === "") {
@@ -38,12 +38,8 @@ class XmlLoader implements LoaderInterface
         }
 
         if ($file) {
-            $xmlstring = file_get_contents($file);
-            $xml = simplexml_load_string($xmlstring);
-            $json = json_encode($xml);
-            $array = json_decode($json, true);
-
-            return $array;
+            $parser = new Parser\Xml();
+            return $parser->fromFile($file);
         }
 
         return null;

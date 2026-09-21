@@ -20,11 +20,11 @@ class JsonLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($resource)
+    public function load(string $resource): ?array
     {
-        // check the extension. If it's not provided we'll add .php
-        if (pathinfo($resource, PATHINFO_EXTENSION) === "") {
-            $resource .= ".json";
+        // check the extension. If it's not provided we'll add .json
+        if (pathinfo($resource, PATHINFO_EXTENSION) === '') {
+            $resource .= '.json';
         }
 
         $file = false;
@@ -38,8 +38,8 @@ class JsonLoader implements LoaderInterface
         }
 
         if ($file) {
-            $json = file_get_contents($file);
-            return json_decode($json, true);
+            $parser = new \SugiPHP\Config\Parser\Json();
+            return $parser->fromFile($file);
         }
 
         return null;

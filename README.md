@@ -93,18 +93,13 @@ FileLocator is used to search for a (configuration) file in one or more director
 $locator = new FileLocator("/path/to/your/app/config/");
 // search in several directories
 $locator = new FileLocator(array("/path/to/your/app/config", "/other/config/path/"));
-// add additional path
-$locator->addPath("/somewhere/else/config/");
-// Note that later method adds a path to the end. Locator will search in it only if the
-// file was NOT found in the previously added paths. If you wish to add a path in the
-// beginning of the search paths use:
-$locator->unshiftPath("/first/search/path/");
-// remove a search path from the end of the search paths:
-$locator->popPath();
-// remove a path from the beginning of the search paths:
-$locator->shiftPath();
 ?>
 ```
+
+> **Deprecated:** `addPath()`, `popPath()`, `prependPath()`, `unshiftPath()` and
+> `shiftPath()` are deprecated since 2.0.0 and will be removed in a future version.
+> Calling any of them triggers an `E_USER_DEPRECATED` notice. Pass all search paths
+> to the constructor instead of mutating them afterwards.
 
 ## Loader
 

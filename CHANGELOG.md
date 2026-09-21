@@ -46,3 +46,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   on `get()`.
 - README installation instructions updated from `composer require sugiphp/config ~1.1`
   to `composer require sugiphp/config ^2.0`.
+
+### Deprecated
+
+- `SugiPHP\Config\Exception` is deprecated in favor of
+  `SugiPHP\Config\Exception\ConfigException`, which is now its base class.
+  Constructing it emits an `E_USER_DEPRECATED` notice. It will be removed in a
+  future major version — catch/throw `ConfigException` (or a more specific
+  subclass) instead.
+- `FileLocator::addPath()`, `popPath()`, `prependPath()`, `unshiftPath()` and
+  `shiftPath()` are deprecated. Calling any of them now emits an
+  `E_USER_DEPRECATED` notice; they will be removed in a future major version.
+  Pass all search paths to the `FileLocator` constructor instead of mutating them
+  after construction.

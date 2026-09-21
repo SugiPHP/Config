@@ -20,11 +20,11 @@ class IniLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($resource)
+    public function load(string $resource): ?array
     {
         // check the extension. If it's not provided we'll add .ini
-        if (pathinfo($resource, PATHINFO_EXTENSION) === "") {
-            $resource .= ".ini";
+        if (pathinfo($resource, PATHINFO_EXTENSION) === '') {
+            $resource .= '.ini';
         }
 
         $file = false;
@@ -37,13 +37,11 @@ class IniLoader implements LoaderInterface
             $file = $resource;
         }
 
-        if ($file) {
-            // By setting the process_sections parameter (second param) to TRUE, you get a
-            // multidimensional array, with the section names and settings included.
-            // The default for process_sections is FALSE
-            return parse_ini_file($file, true);
+        if (!$file) {
+            return null;
         }
 
-        return null;
+        $parser = new Parser\Ini();
+        return $parser->fromFile($file);
     }
 }

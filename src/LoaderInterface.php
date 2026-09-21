@@ -20,5 +20,5 @@ interface LoaderInterface
      *
      * @return array|null Returns NULL if the resource was not found
      */
-    public function load($resource);
+    public function load(string $resource): ?array;
 }

@@ -20,11 +20,11 @@ class NativeLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($resource)
+    public function load(string $resource): ?array
     {
         // check the extension. If it's not provided we'll add .php
-        if (pathinfo($resource, PATHINFO_EXTENSION) === "") {
-            $resource .= ".php";
+        if (pathinfo($resource, PATHINFO_EXTENSION) === '') {
+            $resource .= '.php';
         }
 
         $file = false;
@@ -38,7 +38,8 @@ class NativeLoader implements LoaderInterface
         }
 
         if ($file) {
-            return include $file;
+            $parser = new \SugiPHP\Config\Parser\Php();
+            return $parser->fromFile($file);
         }
 
         return null;
