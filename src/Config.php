@@ -4,32 +4,64 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config;
 
+use SugiPHP\Config\Exception\ConfigException;
+use SugiPHP\Config\Loader\LoaderInterface;
+
+/**
+ * Convenience entry point that picks the right configuration reader for
+ * whatever you give its constructor:
+ *
+ *   - a path to an existing file           -> FileConfig
+ *   - a path to an existing directory,
+ *     or an array of directories           -> DirectoryConfig
+ *   - a LoaderInterface,
+ *     or an array of LoaderInterface       -> LoaderConfig
+ *
+ *   $config = new Config(__DIR__ . '/config/app.php');   // FileConfig
+ *   $config = new Config(__DIR__ . '/config');            // DirectoryConfig
+ *   $config = new Config([__DIR__ . '/config', __DIR__ . '/config.local']);
+ *   $config = new Config(new PhpLoader($locator));        // LoaderConfig
+ *   $config = new Config([$phpLoader, $jsonLoader]);
+ */
 class Config implements ConfigInterface
 {
-    protected $registry = array();
-    protected $loaders = array();
+    private ConfigInterface $delegate;
 
     /**
-     * Creates a Config instance.
-     *
-     * @param array|LoaderInterface|null $loaders array of LoaderInterface
+     * @param string|array<string>|array<LoaderInterface>|LoaderInterface $source
      */
-    public function __construct($loaders = null)
+    public function __construct(string|array|LoaderInterface $source = [])
     {
-        if (!is_null($loaders)) {
-            if (is_array($loaders)) {
-                foreach ($loaders as $loader) {
-                    $this->addLoader($loader);
-                }
-            } else {
-                $this->addLoader($loaders);
-            }
+        if ($source instanceof LoaderInterface) {
+            $this->delegate = new LoaderConfig($source);
+            return;
         }
-    }
 
-    public function addLoader(LoaderInterface $loader)
-    {
-        $this->loaders[] = $loader;
+        if (is_string($source)) {
+            if (is_file($source)) {
+                $this->delegate = new FileConfig($source);
+                return;
+            }
+
+            if (is_dir($source)) {
+                $this->delegate = new DirectoryConfig($source);
+                return;
+            }
+
+            throw new ConfigException("Neither a file nor a directory: {$source}");
+        }
+
+        // array
+        if (empty($source)) {
+            $this->delegate = new LoaderConfig();
+            return;
+        }
+
+        $first = reset($source);
+
+        $this->delegate = $first instanceof LoaderInterface
+            ? new LoaderConfig($source)
+            : new DirectoryConfig($source);
     }
 
     /**
@@ -37,10 +69,7 @@ class Config implements ConfigInterface
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $this->load($key);
-        $res = $this->parse($key);
-
-        return is_null($res) ? $default : $res;
+        return $this->delegate->get($key, $default);
     }
 
     /**
@@ -48,72 +77,6 @@ class Config implements ConfigInterface
      */
     public function has(string $key): bool
     {
-        $this->load($key);
-
-        $values = $this->registry;
-        foreach (explode(".", $key) as $part) {
-            if (!is_array($values) || !array_key_exists($part, $values)) {
-                return false;
-            }
-            $values = $values[$part];
-        }
-
-        return !is_null($values);
-    }
-
-    /**
-     * Makes sure the configuration file for the given (possibly dotted) key is
-     * discovered and loaded into the registry.
-     *
-     * @param string $key
-     *
-     * @return void
-     */
-    protected function load(string $key)
-    {
-        $parts = explode(".", $key);
-        $file = array_shift($parts);
-
-        if (!isset($this->registry[$file])) {
-            $this->registry[$file] = $this->discover($file);
-        }
-    }
-
-    /**
-     * Tries to find needed resource by looping each of registered loaders.
-     *
-     * @param string $resource
-     *
-     * @return array|null Returns null if resource is not found
-     */
-    protected function discover($resource)
-    {
-        foreach ($this->loaders as $loader) {
-            $res = $loader->load($resource);
-            if (!is_null($res)) {
-                return $res;
-            }
-        }
-    }
-
-    /**
-     * Search for a key with dot notation in the array. If the key is not found NULL is returned
-     *
-     * @param string $key
-     *
-     * @return mixed|null Returns NULL if the key is not found.
-     */
-    protected function parse($key)
-    {
-        $values = $this->registry;
-        $parts = explode(".", $key);
-        foreach ($parts as $part) {
-            if (!is_array($values) || !array_key_exists($part, $values)) {
-                return ;
-            }
-            $values = $values[$part];
-        }
-
-        return $values;
+        return $this->delegate->has($key);
     }
 }

@@ -3,21 +3,20 @@
 declare(strict_types=1);
 
 /**
- * Tests for NativeLoader class.
+ * Tests for PhpLoader class.
  */
 
 namespace SugiPHP\Config\Tests;
 
-use SugiPHP\Config\NativeLoader as Loader;
-use SugiPHP\Config\FileLocator as Locator;
+use SugiPHP\Config\Loader\PhpLoader as Loader;
 use PHPUnit\Framework\TestCase;
 
-class NativeLoaderTest extends TestCase
+class PhpLoaderTest extends TestCase
 {
-    public function testNativeLoaderIsLoaderInterface()
+    public function testPhpLoaderIsLoaderInterface()
     {
         $loader = new Loader();
-        $this->assertInstanceOf("\SugiPHP\Config\LoaderInterface", $loader);
+        $this->assertInstanceOf("\SugiPHP\Config\Loader\LoaderInterface", $loader);
     }
 
     public function testReturnsNull()
@@ -39,8 +38,7 @@ class NativeLoaderTest extends TestCase
     {
         $testArr = include __DIR__."/config/test.php";
 
-        $locator = new Locator(array(__DIR__, __DIR__."/config"));
-        $loader = new Loader($locator);
+        $loader = new Loader(array(__DIR__, __DIR__."/config"));
         $this->assertNull($loader->load("nosuchfile"));
         $this->assertEquals($testArr, $loader->load("config/test.php"));
         $this->assertEquals($testArr, $loader->load("config/test"));

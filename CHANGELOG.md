@@ -4,7 +4,66 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [2.0.0] - Unreleased
+## [3.0.0] - Unreleased
+
+### Breaking Changes
+
+- Removed `SugiPHP\Config\Exception` (`src/Exception.php`), deprecated since
+  2.0.0. Use `SugiPHP\Config\Exception\ConfigException` (or a more specific
+  subclass: `FileException`, `ParserException`) instead. Code catching
+  `SugiPHP\Config\Exception` specifically (rather than `ConfigException` or
+  `\Exception`) must be updated.
+- Moved all loaders into the `SugiPHP\Config\Loader` namespace and renamed
+  `NativeLoader` to `PhpLoader`:
+  - `SugiPHP\Config\IniLoader` → `SugiPHP\Config\Loader\IniLoader`
+  - `SugiPHP\Config\JsonLoader` → `SugiPHP\Config\Loader\JsonLoader`
+  - `SugiPHP\Config\XmlLoader` → `SugiPHP\Config\Loader\XmlLoader`
+  - `SugiPHP\Config\NativeLoader` → `SugiPHP\Config\Loader\PhpLoader`
+  - `SugiPHP\Config\LoaderInterface` → `SugiPHP\Config\Loader\LoaderInterface`
+- Removed `SugiPHP\Config\FileLocator` and `SugiPHP\Config\LocatorInterface`
+  entirely (their deprecated mutation methods — `addPath()`, `popPath()`,
+  `prependPath()`, `unshiftPath()`, `shiftPath()` — had already been removed;
+  now the whole class is gone). Its directory-search logic was merged
+  directly into `AbstractLoader`, the new base class shared by `IniLoader`,
+  `JsonLoader`, `PhpLoader` and `XmlLoader`. Those loaders' constructors now
+  take `string|array<string>|null $paths` (one or more directories) directly
+  — code doing `new IniLoader(new FileLocator($dirs))` must change to
+  `new IniLoader($dirs)`.
+  - `Config`'s constructor no longer accepts `null`; omit the argument
+    entirely to get an empty, loader-based `Config` (`addLoader()` isn't
+    available on it either — see above).
+  - Constructing it with a string that's neither an existing file nor an
+    existing directory now throws `SugiPHP\Config\Exception\ConfigException`.
+
+### Added
+
+- `SugiPHP\Config\DotConfig`: wraps a plain, already-in-memory PHP array with
+  dot-notation `get()`/`has()`, plus `toArray()` to get the whole array back.
+- `SugiPHP\Config\FileConfig` (extends `DotConfig`): reads a single
+  configuration file, auto-detecting the parser from its extension (`.php`,
+  `.json`, `.ini`, `.xml`). Throws `ConfigException` if the file doesn't
+  exist, has no extension, or has an unsupported one.
+- `SugiPHP\Config\DirectoryConfig`: resolves `resource.key` style lookups
+  against files in one or more directories — the first segment of the key is
+  the file name (extension auto-detected: `.php`, then `.ini`, then `.json`,
+  then `.xml`; first match wins), the rest is resolved with dot notation
+  inside that file. Public `addDirectory()`. Throws `ConfigException` for a
+  directory that doesn't exist.
+- `SugiPHP\Config\LoaderConfig`: a `Config`-independent reimplementation of
+  the old loader-list resolution (tries each loader in order, first match
+  wins). Public `addLoader()`.
+
+### Deprecated
+
+- `LoaderConfig` (and constructing loaders directly in general, including
+  passing a loader to `Config`) is documented as existing only for backward
+  compatibility with the old, loader-based `Config`, and may be removed in a
+  future major version — prefer `FileConfig`/`DirectoryConfig`. Unlike the
+  deprecations below, this one doesn't emit a runtime `E_USER_DEPRECATED`
+  notice yet, it's a documentation-only notice for now.
+
+
+## [2.0.0]
 
 ### Breaking Changes
 

@@ -8,8 +8,7 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config\Tests;
 
-use SugiPHP\Config\IniLoader as Loader;
-use SugiPHP\Config\FileLocator as Locator;
+use SugiPHP\Config\Loader\IniLoader as Loader;
 use PHPUnit\Framework\TestCase;
 
 class IniLoaderTest extends TestCase
@@ -17,7 +16,7 @@ class IniLoaderTest extends TestCase
     public function testJsonLoaderIsLoaderInterface()
     {
         $loader = new Loader();
-        $this->assertInstanceOf("\SugiPHP\Config\LoaderInterface", $loader);
+        $this->assertInstanceOf("\SugiPHP\Config\Loader\LoaderInterface", $loader);
     }
 
     public function testReturnsNull()
@@ -40,8 +39,7 @@ class IniLoaderTest extends TestCase
     {
         $testArr = array("istr" => "value", "iarr" => array("sub" => "subvalue", "nokey"), "inull" => null, "iint" => 42, "izero" => 0, "ifalse" => false, "itrue" => true);
 
-        $locator = new Locator(array(__DIR__, __DIR__."/config"));
-        $loader = new Loader($locator);
+        $loader = new Loader(array(__DIR__, __DIR__."/config"));
         $this->assertNull($loader->load("nosuchfile"));
         $this->assertEquals($testArr, $loader->load("config/test.ini"));
         $this->assertEquals($testArr, $loader->load("config/test"));

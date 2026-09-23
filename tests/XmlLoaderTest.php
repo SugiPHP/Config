@@ -8,8 +8,7 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config\Tests;
 
-use SugiPHP\Config\XmlLoader as Loader;
-use SugiPHP\Config\FileLocator as Locator;
+use SugiPHP\Config\Loader\XmlLoader as Loader;
 use PHPUnit\Framework\TestCase;
 
 class XmlLoaderTest extends TestCase
@@ -17,7 +16,7 @@ class XmlLoaderTest extends TestCase
     public function testJsonLoaderIsLoaderInterface()
     {
         $loader = new Loader();
-        $this->assertInstanceOf("\SugiPHP\Config\LoaderInterface", $loader);
+        $this->assertInstanceOf("\SugiPHP\Config\Loader\LoaderInterface", $loader);
     }
 
     public function testReturnsNull()
@@ -37,8 +36,7 @@ class XmlLoaderTest extends TestCase
     {
         $testArr = array("str" => "value", "arr" => array(array("sub" => "subvalue"), "nokey"), "null" => "null", "int" => "42", "zero" => "0", "false" => "false", "true" => "true");
 
-        $locator = new Locator(array(__DIR__, __DIR__."/config"));
-        $loader = new Loader($locator);
+        $loader = new Loader(array(__DIR__, __DIR__."/config"));
         $this->assertNull($loader->load("nosuchfile"));
         $this->assertEquals($testArr, $loader->load("config/test.xml"));
         $this->assertEquals($testArr, $loader->load("config/test"));

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Loader interface. All loaders must implement this interface.
  */
 
-namespace SugiPHP\Config;
+namespace SugiPHP\Config\Loader;
 
 /**
  * Loader Interface
