@@ -61,7 +61,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - `SugiPHP\Config\Parser\Php::parse()` now returns an array passed to it
   unchanged, instead of always throwing. Anything else (including a string of
-  PHP code) still throws `ConfigException`.
+  PHP code) still throws (now `ParserException`, see below).
+- Parsers now consistently throw `SugiPHP\Config\Exception\ParserException`
+  (a `ConfigException` subclass, so existing `catch (ConfigException)` still
+  works) for invalid content, and `FileException` only for missing/unreadable
+  files:
+  - `Xml`: malformed XML used to end in a `TypeError` (and emit libxml
+    warnings); it now throws `ParserException` with the libxml error message.
+  - `Json`: syntax errors and non-array results threw the base
+    `ConfigException`; now `ParserException`.
+  - `Php`: a file that doesn't return an array threw `FileException`; now
+    `ParserException`. `Php::parse()` with a non-array also throws
+    `ParserException`.
+- A configuration file that exists but isn't readable now always throws
+  `FileException`, instead of being handled differently depending on how the
+  loader was built. Previously a loader without search paths treated such a
+  file as "not found", falling through to the next loader or to the default
+  value and hiding permission problems. A loader with search paths already
+  threw. `Php::parseFile()` now checks readability too and throws
+  `FileException`, where before it emitted an `include` warning.
 
 ### Deprecated
 

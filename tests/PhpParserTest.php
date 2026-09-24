@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config\Tests;
 
-use SugiPHP\Config\Exception\ConfigException;
+use SugiPHP\Config\Exception\ParserException;
 use SugiPHP\Config\Parser\Php;
 use PHPUnit\Framework\TestCase;
 
@@ -27,13 +27,13 @@ class PhpParserTest extends TestCase
 
     public function testParseThrowsOnString()
     {
-        $this->expectException(ConfigException::class);
+        $this->expectException(ParserException::class);
         (new Php())->parse('<?php return ["foo" => "bar"];');
     }
 
     public function testParseThrowsOnNonArray()
     {
-        $this->expectException(ConfigException::class);
+        $this->expectException(ParserException::class);
         (new Php())->parse(42);
     }
 

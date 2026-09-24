@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config\Parser;
 
-use SugiPHP\Config\Exception\ConfigException;
+use SugiPHP\Config\Exception\ParserException;
 
 /**
  * JSON parser
@@ -21,11 +21,11 @@ class Json extends AbstractFileReader
         $arr = json_decode((string) $data, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ConfigException(json_last_error_msg());
+            throw new ParserException('JSON parse error: ' . json_last_error_msg());
         }
 
         if (!is_array($arr)) {
-            throw new ConfigException('JSON string is not a valid array');
+            throw new ParserException('JSON string is not a valid array');
         }
 
         return $arr;

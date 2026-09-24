@@ -75,8 +75,9 @@ abstract class AbstractLoader implements LoaderInterface
     abstract protected function getParser(): ParserInterface;
 
     /**
-     * Resolves a resource as a direct, readable file path (no search paths
-     * configured).
+     * Resolves a resource as a direct file path (no search paths configured).
+     * An existing but unreadable file is still returned, so the parser can
+     * report it with a FileException instead of it being silently skipped.
      *
      * @param string $resource
      *
@@ -84,7 +85,7 @@ abstract class AbstractLoader implements LoaderInterface
      */
     private function locateDirect(string $resource): ?string
     {
-        return (is_file($resource) && is_readable($resource)) ? $resource : null;
+        return is_file($resource) ? $resource : null;
     }
 
     /**

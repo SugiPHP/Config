@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SugiPHP\Config\Parser;
 
 use SugiPHP\Config\Exception\FileException;
-use SugiPHP\Config\Exception\ConfigException;
+use SugiPHP\Config\Exception\ParserException;
 
 /**
  * PHP array
@@ -20,10 +20,13 @@ class Php implements ParserInterface
         if (!is_file($fileName)) {
             throw new FileException("File {$fileName} not found");
         }
+        if (!is_readable($fileName)) {
+            throw new FileException("File {$fileName} is unreadable");
+        }
 
         $arr = include $fileName;
         if (!is_array($arr)) {
-            throw new FileException("File {$fileName} does not return an array");
+            throw new ParserException("File {$fileName} does not return an array");
         }
 
         return $arr;
@@ -41,6 +44,6 @@ class Php implements ParserInterface
             return $data;
         }
 
-        throw new ConfigException('PHP parser can only parse arrays, ' . get_debug_type($data) . ' given');
+        throw new ParserException('PHP parser can only parse arrays, ' . get_debug_type($data) . ' given');
     }
 }
