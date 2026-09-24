@@ -68,6 +68,21 @@ class ConfigTest extends TestCase
         }
     }
 
+    public function testDirectoryFileAndArrayGiveTheSameAnswers()
+    {
+        $data = include __DIR__."/directory/test.php";
+        $fromDirectory = new Config(__DIR__."/directory");
+        $fromFile = new Config(__DIR__."/directory/test.php");
+        $fromArray = new Config($data);
+
+        foreach (["int", "str", "arr", "arr.sub", "null", "null.sub", "nosuchkey"] as $key) {
+            $this->assertSame($fromFile->has($key), $fromDirectory->has("test.{$key}"), "has({$key})");
+            $this->assertSame($fromFile->has($key), $fromArray->has($key), "has({$key})");
+            $this->assertSame($fromFile->get($key, "default"), $fromDirectory->get("test.{$key}", "default"), "get({$key})");
+            $this->assertSame($fromFile->get($key, "default"), $fromArray->get($key, "default"), "get({$key})");
+        }
+    }
+
     public function testGetReturnsNullIfNotFound()
     {
         $config = new Config(__DIR__."/directory");

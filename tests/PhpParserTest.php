@@ -41,4 +41,33 @@ class PhpParserTest extends TestCase
     {
         $this->assertSame(include __DIR__."/config/test.php", (new Php())->parseFile(__DIR__."/config/test.php"));
     }
+
+    public function testParseFileIgnoresIncludePath()
+    {
+        // a same-named file earlier in include_path must not be run instead
+        // of the relative path that was checked
+        $base = sys_get_temp_dir() . '/sugi-include-' . uniqid();
+        mkdir("{$base}/decoy/conf", 0777, true);
+        mkdir("{$base}/cwd/conf", 0777, true);
+        file_put_contents("{$base}/decoy/conf/app.php", '<?php return ["from" => "include_path"];');
+        file_put_contents("{$base}/cwd/conf/app.php", '<?php return ["from" => "cwd"];');
+
+        $cwd = getcwd();
+        $includePath = get_include_path();
+        try {
+            chdir("{$base}/cwd");
+            set_include_path("{$base}/decoy");
+            $this->assertSame(["from" => "cwd"], (new Php())->parseFile("conf/app.php"));
+        } finally {
+            chdir($cwd);
+            set_include_path($includePath);
+            unlink("{$base}/decoy/conf/app.php");
+            unlink("{$base}/cwd/conf/app.php");
+            rmdir("{$base}/decoy/conf");
+            rmdir("{$base}/cwd/conf");
+            rmdir("{$base}/decoy");
+            rmdir("{$base}/cwd");
+            rmdir($base);
+        }
+    }
 }

@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Breaking Changes
 
+- Requires PHP 8.1 or newer (`composer.json` said `>=7.4`, although the code
+  already needed PHP 8.0).
 - Removed the loaders and the loader-based `Config`. Configuration is now read
   with `FileConfig` (one file), `DirectoryConfig` (one file per top-level key
   in a directory), `DotConfig` (an in-memory array), or `Config`, which picks
@@ -39,6 +41,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   becomes `null`. In 2.x every value was a string: `42` gave `"42"`, `on`
   gave `"1"`, and `off`/`none`/`null` gave `""`. Quoted values (`"42"`) stay
   strings. Code comparing INI values strictly against strings must be updated.
+- A key explicitly set to `null` now exists, in every class: `has()` returns
+  `true` and `get()` returns `null` rather than the default. The 2.x `Config`
+  treated it as absent. Code relying on `get("key", $default)` to replace an
+  explicit `null` with `$default` must use `get("key") ?? $default` instead.
+- XML: empty elements (`<name></name>`, `<name/>`) give `""` instead of `[]`,
+  and CDATA sections give their text instead of being silently dropped (a
+  `<password><![CDATA[p&ss]]></password>` used to give `[]`).
 - Removed `SugiPHP\Config\Exception` (`src/Exception.php`), deprecated since
   2.0.0. Catch/throw `SugiPHP\Config\Exception\ConfigException` (or a more
   specific subclass: `FileException`, `ParserException`) instead.
@@ -65,13 +74,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   with dot notation inside that file, e.g. `get("db.host")` reads `host` from
   `db.php`. Files are loaded lazily, on first access. The constructor takes
   exactly one directory and throws `ConfigException` if it doesn't exist.
-  Like the 2.x `Config`, a key whose value is `null` is treated as absent.
 - `SugiPHP\Config\DotConfig`: wraps an in-memory array with dot-notation
-  `get()`/`has()`, plus `toArray()` to get the whole array back. Unlike
-  `DirectoryConfig`, a key explicitly set to `null` exists: `has()` returns
-  `true` and `get()` returns `null` rather than the default. `FileConfig`
-  extends `DotConfig`, so the same applies to it (and to `Config` given a
-  file or an array).
+  `get()`/`has()`, plus `toArray()` to get the whole array back.
 
 ### Changed
 
@@ -97,6 +101,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   found", falling through to the next loader or the default value and hiding
   permission problems. `Php::parseFile()` now checks readability too, instead
   of emitting an `include` warning.
+
+### Fixed
+
+- `Php::parseFile()` includes the file by its absolute path. With a relative
+  path, `include` searched `include_path` first, so it could run a different
+  file with the same relative name than the one that was checked.
 
 
 ## [2.0.0]

@@ -2,6 +2,8 @@
 
 ## Installation
 
+Requires PHP 8.1 or newer.
+
 ```shell
 composer require sugiphp/config @dev-main
 ```
@@ -25,6 +27,10 @@ $config->has("production.host");           // true
 $config->has("testing.host");              // false
 ?>
 ```
+
+A key explicitly set to `null` in the configuration exists: `has()` returns
+`true` for it and `get()` returns `null`, not the default value. This is the
+same for every class below.
 
 The file's extension (`.php`, `.json`, `.ini` or `.xml`) determines which parser is
 used to read it — see the formats below for what each looks like. If the file

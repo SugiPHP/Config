@@ -24,8 +24,14 @@ class Php implements ParserInterface
             throw new FileException("File {$fileName} is unreadable");
         }
 
+        // include the absolute path of the file checked above; a relative path
+        // would be looked up in include_path first and could run another file.
+        // realpath() fails for stream wrappers (phar://...), which include
+        // doesn't resolve through include_path anyway
+        $realPath = realpath($fileName) ?: $fileName;
+
         try {
-            $arr = include $fileName;
+            $arr = include $realPath;
         } catch (\ParseError $e) {
             throw new ParserException("PHP parse error in {$fileName} on line {$e->getLine()}: {$e->getMessage()}", 0, $e);
         }

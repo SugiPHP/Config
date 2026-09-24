@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SugiPHP\Config\Parser;
 
+use SimpleXMLElement;
 use SugiPHP\Config\Exception\ParserException;
 
 /**
@@ -20,7 +21,8 @@ class Xml extends AbstractFileReader
     {
         $previous = libxml_use_internal_errors(true);
         try {
-            $xml = simplexml_load_string((string) $data);
+            // LIBXML_NOCDATA merges CDATA sections into the text of their element
+            $xml = simplexml_load_string((string) $data, SimpleXMLElement::class, LIBXML_NOCDATA);
             $error = libxml_get_last_error();
             libxml_clear_errors();
         } finally {
@@ -32,11 +34,52 @@ class Xml extends AbstractFileReader
             throw new ParserException("XML parse error: {$message}");
         }
 
-        $array = json_decode((string) json_encode($xml), true);
-        if (!is_array($array)) {
-            throw new ParserException('XML string is not a valid array');
+        $array = $this->toArray($xml);
+
+        // the root element holds the configuration, so it's always an array,
+        // even when it has no child elements
+        return is_array($array) ? $array : [];
+    }
+
+    /**
+     * Converts an element to an array of its children, or to its text if it
+     * has none. Repeated child elements become a list. Attributes are kept
+     * under "@attributes" for elements without text.
+     *
+     * @param SimpleXMLElement $element
+     *
+     * @return array|string
+     */
+    private function toArray(SimpleXMLElement $element): array|string
+    {
+        $attributes = [];
+        foreach ($element->attributes() as $name => $value) {
+            $attributes[$name] = (string) $value;
         }
 
-        return $array;
+        $children = [];
+        $counts = [];
+        foreach ($element->children() as $name => $child) {
+            $value = $this->toArray($child);
+            $counts[$name] = ($counts[$name] ?? 0) + 1;
+            if ($counts[$name] === 1) {
+                $children[$name] = $value;
+            } elseif ($counts[$name] === 2) {
+                $children[$name] = [$children[$name], $value];
+            } else {
+                $children[$name][] = $value;
+            }
+        }
+
+        if ($children) {
+            return $attributes ? ['@attributes' => $attributes] + $children : $children;
+        }
+
+        $text = (string) $element;
+        if ($text === '' && $attributes) {
+            return ['@attributes' => $attributes];
+        }
+
+        return $text;
     }
 }

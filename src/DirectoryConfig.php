@@ -12,7 +12,8 @@ use SugiPHP\Config\Exception\ConfigException;
  *
  * The first segment of a key (up to the first dot) is treated as a file name
  * (without extension) to look up in the given directory; the rest of the key
- * is resolved with dot notation inside that file's contents. The file's
+ * is resolved with dot notation inside that file's contents, exactly like
+ * FileConfig does (a key explicitly set to null exists). The file's
  * extension is auto-detected: <name>.php, <name>.ini, <name>.json or
  * <name>.xml. Exactly one of them may exist - if more than one does, the
  * resource is ambiguous and a ConfigException is thrown, rather than one
@@ -27,9 +28,12 @@ class DirectoryConfig implements ConfigInterface
     private string $directory;
 
     /**
-     * @var array<string, array|null>
+     * Loaded files, keyed by resource name. Null marks a resource with no
+     * matching file, so it isn't searched for again.
+     *
+     * @var array<string, FileConfig|null>
      */
-    private array $registry = [];
+    private array $files = [];
 
     /**
      * @param string $directory the directory to search
@@ -49,17 +53,14 @@ class DirectoryConfig implements ConfigInterface
      */
     public function get(string $key, mixed $default = null): mixed
     {
-        $this->load($key);
+        [$resource, $subkey] = $this->splitKey($key);
 
-        $values = $this->registry;
-        foreach (explode('.', $key) as $part) {
-            if (!is_array($values) || !array_key_exists($part, $values)) {
-                return $default;
-            }
-            $values = $values[$part];
+        $file = $this->load($resource);
+        if ($file === null) {
+            return $default;
         }
 
-        return $values ?? $default;
+        return $subkey === null ? $file->toArray() : $file->get($subkey, $default);
     }
 
     /**
@@ -67,52 +68,48 @@ class DirectoryConfig implements ConfigInterface
      */
     public function has(string $key): bool
     {
-        $this->load($key);
+        [$resource, $subkey] = $this->splitKey($key);
 
-        $values = $this->registry;
-        foreach (explode('.', $key) as $part) {
-            if (!is_array($values) || !array_key_exists($part, $values)) {
-                return false;
-            }
-            $values = $values[$part];
+        $file = $this->load($resource);
+        if ($file === null) {
+            return false;
         }
 
-        return !is_null($values);
+        return $subkey === null || $file->has($subkey);
     }
 
     /**
-     * Makes sure the resource (the first segment of the key) has been
-     * discovered and, if found, loaded into the registry.
+     * Splits "db.host.name" into the resource ("db") and the key inside it
+     * ("host.name", or null when there's none).
      *
      * @param string $key
      *
-     * @return void
+     * @return array{0: string, 1: string|null}
      */
-    private function load(string $key): void
+    private function splitKey(string $key): array
     {
-        $parts = explode('.', $key);
-        $resource = array_shift($parts);
+        $parts = explode('.', $key, 2);
 
-        if (!isset($this->registry[$resource])) {
-            $this->registry[$resource] = $this->discover($resource);
-        }
+        return [$parts[0], $parts[1] ?? null];
     }
 
     /**
+     * Returns the file for a resource, loading it on first access.
+     *
      * @param string $resource
      *
-     * @return array|null Returns null if the resource was not found
+     * @return FileConfig|null Returns null if the resource was not found
      *
      * @throws ConfigException if the resource is ambiguous
      */
-    private function discover(string $resource): ?array
+    private function load(string $resource): ?FileConfig
     {
-        $filePath = $this->locateFile($resource);
-        if ($filePath === null) {
-            return null;
+        if (!array_key_exists($resource, $this->files)) {
+            $filePath = $this->locateFile($resource);
+            $this->files[$resource] = $filePath === null ? null : new FileConfig($filePath);
         }
 
-        return (new FileConfig($filePath))->toArray();
+        return $this->files[$resource];
     }
 
     /**

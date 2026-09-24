@@ -162,13 +162,27 @@ class DirectoryConfigTest extends TestCase
         $config->has("test");
     }
 
-    public function testNullValueIsTreatedAsAbsentLikeConfig()
+    public function testNullValueExistsLikeInFileConfig()
     {
         // "test.null" exists and is explicitly null in tests/directory/test.php;
-        // DirectoryConfig follows Config's convention (not DotConfig's) where
-        // a resolved null is treated the same as "not found".
+        // like FileConfig and DotConfig, an explicit null is a value
         $config = new DirectoryConfig(__DIR__."/directory");
-        $this->assertSame("default", $config->get("test.null", "default"));
-        $this->assertFalse($config->has("test.null"));
+        $this->assertNull($config->get("test.null", "default"));
+        $this->assertTrue($config->has("test.null"));
+    }
+
+    public function testMissingKeyInsideNullValueIsAbsent()
+    {
+        $config = new DirectoryConfig(__DIR__."/directory");
+        $this->assertSame("default", $config->get("test.null.sub", "default"));
+        $this->assertFalse($config->has("test.null.sub"));
+    }
+
+    public function testMissingResourceIsNotReportedAsExistingOnSecondLookup()
+    {
+        $config = new DirectoryConfig(__DIR__."/directory");
+        $this->assertFalse($config->has("nosuchfile"));
+        $this->assertFalse($config->has("nosuchfile"));
+        $this->assertSame("default", $config->get("nosuchfile", "default"));
     }
 }
