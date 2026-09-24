@@ -30,46 +30,17 @@ class Php implements ParserInterface
     }
 
     /**
+     * A PHP array is already "parsed", so it's returned as is. Strings (PHP
+     * source code) are not supported.
+     *
      * {@inheritDoc}
      */
     public function parse(mixed $data): array
     {
-        throw new ConfigException('PHP parser does not support string parsing');
-    }
+        if (is_array($data)) {
+            return $data;
+        }
 
-    /**
-     * @deprecated since 2.0.0, use parseFile() instead. Will be removed in a
-     *             future version.
-     */
-    public function fromFile(string $fileName): array
-    {
-        @trigger_error(
-            sprintf(
-                '%s::fromFile() is deprecated since 2.0.0, use %s::parseFile() instead. It will be removed in a future version.',
-                self::class,
-                self::class
-            ),
-            E_USER_DEPRECATED
-        );
-
-        return $this->parseFile($fileName);
-    }
-
-    /**
-     * @deprecated since 2.0.0, use parse() instead. Will be removed in a
-     *             future version.
-     */
-    public function fromString(string $string): array
-    {
-        @trigger_error(
-            sprintf(
-                '%s::fromString() is deprecated since 2.0.0, use %s::parse() instead. It will be removed in a future version.',
-                self::class,
-                self::class
-            ),
-            E_USER_DEPRECATED
-        );
-
-        return $this->parse($string);
+        throw new ConfigException('PHP parser can only parse arrays, ' . get_debug_type($data) . ' given');
     }
 }

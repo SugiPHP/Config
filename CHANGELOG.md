@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   subclass: `FileException`, `ParserException`) instead. Code catching
   `SugiPHP\Config\Exception` specifically (rather than `ConfigException` or
   `\Exception`) must be updated.
+- Removed `fromString()` and `fromFile()` from the parsers (`Ini`, `Json`,
+  `Php`, `Xml`) and `AbstractFileReader`, deprecated since 2.0.0. Use
+  `parse()` and `parseFile()` instead. `ParserInterface` already declared only
+  the new methods, so custom parsers implementing it are unaffected.
 - Moved all loaders into the `SugiPHP\Config\Loader` namespace and renamed
   `NativeLoader` to `PhpLoader`:
   - `SugiPHP\Config\IniLoader` → `SugiPHP\Config\Loader\IniLoader`
@@ -52,6 +56,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `SugiPHP\Config\LoaderConfig`: a `Config`-independent reimplementation of
   the old loader-list resolution (tries each loader in order, first match
   wins). Public `addLoader()`.
+
+### Changed
+
+- `SugiPHP\Config\Parser\Php::parse()` now returns an array passed to it
+  unchanged, instead of always throwing. Anything else (including a string of
+  PHP code) still throws `ConfigException`.
 
 ### Deprecated
 

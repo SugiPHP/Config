@@ -36,7 +36,7 @@ class FileConfig extends DotConfig
         } else {
             throw new ConfigException("Parser unavailable for file with extension {$ext}");
         }
-        $arr = $parser->fromFile($filename);
+        $arr = $parser->parseFile($filename);
 
         parent::__construct($arr);
     }
