@@ -39,7 +39,7 @@ class NativeLoader implements LoaderInterface
 
         if ($file) {
             $parser = new \SugiPHP\Config\Parser\Php();
-            return $parser->fromFile($file);
+            return $parser->parseFile($file);
         }
 
         return null;

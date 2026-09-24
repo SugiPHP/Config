@@ -39,7 +39,7 @@ class JsonLoader implements LoaderInterface
 
         if ($file) {
             $parser = new \SugiPHP\Config\Parser\Json();
-            return $parser->fromFile($file);
+            return $parser->parseFile($file);
         }
 
         return null;

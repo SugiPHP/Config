@@ -39,7 +39,7 @@ class XmlLoader implements LoaderInterface
 
         if ($file) {
             $parser = new Parser\Xml();
-            return $parser->fromFile($file);
+            return $parser->parseFile($file);
         }
 
         return null;

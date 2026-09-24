@@ -42,6 +42,6 @@ class IniLoader implements LoaderInterface
         }
 
         $parser = new Parser\Ini();
-        return $parser->fromFile($file);
+        return $parser->parseFile($file);
     }
 }

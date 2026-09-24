@@ -5,28 +5,28 @@ declare(strict_types=1);
 namespace SugiPHP\Config\Parser;
 
 /**
- * A parser should convert a string or a file into an associative array which
+ * A parser should convert data or a file into an associative array which
  * then can be passed to a Config class.
  */
 interface ParserInterface
 {
     /**
-     * Convert a string into an array
+     * Convert data into an array.
      *
-     * @param string $string
+     * @param mixed $data
      *
      * @return array
      */
-    public function fromString(string $string): array;
+    public function parse(mixed $data): array;
 
     /**
      * Convert a file to an array.
-     * Usually this method will read a file and pass it to fromString method
+     * Usually this method will read a file and pass its contents to parse()
      * and return the resulting array.
      *
      * @param string $fileName
      *
      * @return array
      */
-    public function fromFile(string $fileName): array;
+    public function parseFile(string $fileName): array;
 }
