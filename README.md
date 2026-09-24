@@ -163,57 +163,134 @@ the lookup is ambiguous and `get()`/`has()` throw a
 `SugiPHP\Config\Exception\ConfigException` instead of silently picking one.
 If the directory doesn't exist, the constructor throws a `ConfigException`.
 
-## LoaderConfig
-
-`LoaderConfig` resolves resources by trying one or more loaders, in order,
-stopping at the first one that finds a match — the same mechanism `Config`
-uses internally when given a loader. Using loaders directly is more manual
-than `FileConfig`/`DirectoryConfig`, so it's discouraged for typical use;
-reach for it only when you need to merge several loaders together, each one
-searching one or more directories for its own file format.
-
-**`LoaderConfig` (and constructing loaders directly in general) exists only
-for backward compatibility with the old, loader-based `Config`. It may be
-removed in a future major version — prefer `FileConfig`/`DirectoryConfig`.**
-
-```php
-<?php
-$loader = new \SugiPHP\Config\Loader\JsonLoader(__DIR__."/config");
-$config = new \SugiPHP\Config\LoaderConfig($loader);
-
-$config->get("app.production.host"); // returns example.com
-$config->get("app.development"); // array("host" => "localhost", "debug" => 1)
-$config->get("app.production.debug"); // will return NULL
-$config->get("app.testing.host", "127.0.0.1"); // will return default value "127.0.0.1"
-?>
-```
-
-A loader can be given a directory, an array of directories, or nothing at all
-(in which case it resolves resources as direct file paths):
-
-```php
-<?php
-// search in one directory only
-$loader = new \SugiPHP\Config\Loader\JsonLoader("/path/to/your/app/config/");
-// search in several directories
-$loader = new \SugiPHP\Config\Loader\JsonLoader(array("/path/to/your/app/config", "/other/config/path/"));
-?>
-```
-
 ## Config
 
 As shown at the top, `Config` can do all of the above by itself — you never
-have to pick a class yourself. Its constructor looks at what you give it and
-delegates accordingly:
+have to pick a class yourself. Its constructor looks at the path you give it
+and delegates accordingly:
 
  - a path to an existing file           -> `FileConfig`
  - a path to an existing directory      -> `DirectoryConfig`
- - a loader, or an array of loaders     -> `LoaderConfig`
 
 ```php
 <?php
-new \SugiPHP\Config\Config(__DIR__."/config/app.php");                          // FileConfig
-new \SugiPHP\Config\Config(__DIR__."/config");                                  // DirectoryConfig
-new \SugiPHP\Config\Config(new \SugiPHP\Config\Loader\JsonLoader(__DIR__."/config")); // LoaderConfig
+new \SugiPHP\Config\Config(__DIR__."/config/app.php"); // FileConfig
+new \SugiPHP\Config\Config(__DIR__."/config");         // DirectoryConfig
+?>
+```
+
+Anything else (a path that is neither a file nor a directory) throws a
+`SugiPHP\Config\Exception\ConfigException`.
+
+## Upgrading from loaders (2.x)
+
+Version 3.0 removed the loaders (`IniLoader`, `JsonLoader`, `NativeLoader`,
+`XmlLoader`, `LoaderInterface`) together with `FileLocator` and
+`LocatorInterface`. `Config` no longer accepts a loader or an array of
+loaders — only a file or directory path. Here is how to replace each typical
+use.
+
+**One loader searching one directory** — pass the directory instead. Keys stay
+the same (`<file name>.<key>`):
+
+```php
+<?php
+// before
+$locator = new \SugiPHP\Config\FileLocator(__DIR__."/config");
+$config = new \SugiPHP\Config\Config(new \SugiPHP\Config\JsonLoader($locator));
+// after
+$config = new \SugiPHP\Config\Config(__DIR__."/config");
+
+$config->get("app.production.host"); // same as before
+?>
+```
+
+**Several loaders (different formats) over the same directory** — also just
+pass the directory; `DirectoryConfig` handles all formats at once. The
+difference is that loaders picked a winner by their order when the same name
+existed in several formats (e.g. `app.ini` and `app.json`), whereas now that's
+an error. Keep one file per name: the files that lost were never read, so
+deleting them doesn't change your configuration.
+
+**A `FileLocator` with several directories** (e.g. defaults plus local
+overrides) — there's no built-in equivalent, since each `DirectoryConfig`
+reads one directory. Combine them with a few lines of your own:
+
+```php
+<?php
+use SugiPHP\Config\ConfigInterface;
+use SugiPHP\Config\DirectoryConfig;
+
+/**
+ * Returns a key from the first config that has it.
+ */
+final class FirstMatchConfig implements ConfigInterface
+{
+    private array $configs;
+
+    public function __construct(ConfigInterface ...$configs)
+    {
+        $this->configs = $configs;
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        foreach ($this->configs as $config) {
+            if ($config->has($key)) {
+                return $config->get($key);
+            }
+        }
+
+        return $default;
+    }
+
+    public function has(string $key): bool
+    {
+        foreach ($this->configs as $config) {
+            if ($config->has($key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+$config = new FirstMatchConfig(
+    new DirectoryConfig(__DIR__."/config.local"),
+    new DirectoryConfig(__DIR__."/config"),
+);
+?>
+```
+
+Note that the loaders picked the first *file* found, so a `config.local/db.php`
+hid all of `config/db.php`. `FirstMatchConfig` falls back per *key*, so
+`config.local/db.php` only needs the keys it overrides.
+
+**A loader without a `FileLocator` (resolving direct file paths)** — use
+`FileConfig` (or `Config`) with the file path. Keys no longer start with the
+file name:
+
+```php
+<?php
+// before
+$config = new \SugiPHP\Config\Config(new \SugiPHP\Config\JsonLoader());
+$config->get("/path/to/app.production.host");
+// after
+$config = new \SugiPHP\Config\FileConfig("/path/to/app.json");
+$config->get("production.host");
+?>
+```
+
+**A custom `LoaderInterface` implementation** (e.g. settings from a database)
+— either load the data into an array and wrap it in a `DotConfig`, or
+implement `ConfigInterface` (`get()` and `has()`) directly:
+
+```php
+<?php
+$rows = $pdo->query("SELECT name, value FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+$config = new \SugiPHP\Config\DotConfig(["settings" => $rows]);
+
+$config->get("settings.site_name");
 ?>
 ```

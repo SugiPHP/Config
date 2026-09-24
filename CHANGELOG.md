@@ -13,10 +13,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   subclass: `FileException`, `ParserException`) instead. Code catching
   `SugiPHP\Config\Exception` specifically (rather than `ConfigException` or
   `\Exception`) must be updated.
-- Removed `fromString()` and `fromFile()` from the parsers (`Ini`, `Json`,
-  `Php`, `Xml`) and `AbstractFileReader`, deprecated since 2.0.0. Use
-  `parse()` and `parseFile()` instead. `ParserInterface` already declared only
-  the new methods, so custom parsers implementing it are unaffected.
 - Moved all loaders into the `SugiPHP\Config\Loader` namespace and renamed
   `NativeLoader` to `PhpLoader`:
   - `SugiPHP\Config\IniLoader` → `SugiPHP\Config\Loader\IniLoader`
@@ -49,44 +45,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   exist, has no extension, or has an unsupported one.
 - `SugiPHP\Config\DirectoryConfig`: resolves `resource.key` style lookups
   against files in a single directory — the first segment of the key is
-  the file name (extension auto-detected: `.php`, `.ini`, `.json` or `.xml`;
-  if more than one exists for the same name, the lookup throws
-  `ConfigException` instead of one file silently shadowing the others), the
-  rest is resolved with dot notation inside that file. The constructor takes exactly one directory (a string,
-  not an array) and throws `ConfigException` if it doesn't exist.
+  the file name (extension auto-detected: `.php`, `.ini`, `.json`,
+  `.xml`), the rest is resolved with dot notation
+  inside that file.
 - `SugiPHP\Config\LoaderConfig`: a `Config`-independent reimplementation of
   the old loader-list resolution (tries each loader in order, first match
   wins). Public `addLoader()`.
-
-### Changed
-
-- `SugiPHP\Config\Parser\Php::parse()` now returns an array passed to it
-  unchanged, instead of always throwing. Anything else (including a string of
-  PHP code) still throws (now `ParserException`, see below).
-- Parsers now consistently throw `SugiPHP\Config\Exception\ParserException`
-  (a `ConfigException` subclass, so existing `catch (ConfigException)` still
-  works) for invalid content, and `FileException` only for missing/unreadable
-  files:
-  - `Xml`: malformed XML used to end in a `TypeError` (and emit libxml
-    warnings); it now throws `ParserException` with the libxml error message.
-  - `Json`: syntax errors and non-array results threw the base
-    `ConfigException`; now `ParserException`.
-  - `Php`: a file that doesn't return an array threw `FileException`; now
-    `ParserException`. `Php::parse()` with a non-array also throws
-    `ParserException`. A PHP file with a syntax error used to escape as an
-    uncaught `\ParseError`; it's now wrapped in a `ParserException` (the
-    original `ParseError` is available via `getPrevious()`).
-  - `Ini`: a syntax error used to emit a PHP warning (which a global error
-    handler could turn into a different exception) before throwing; the
-    warning is now captured and its text included in the `ParserException`
-    message.
-- A configuration file that exists but isn't readable now always throws
-  `FileException`, instead of being handled differently depending on how the
-  loader was built. Previously a loader without search paths treated such a
-  file as "not found", falling through to the next loader or to the default
-  value and hiding permission problems. A loader with search paths already
-  threw. `Php::parseFile()` now checks readability too and throws
-  `FileException`, where before it emitted an `include` warning.
 
 ### Deprecated
 

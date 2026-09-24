@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 /**
  * Tests that an existing but unreadable configuration file is reported with
- * a FileException, regardless of how the loader was constructed, instead of
- * being treated as "not found".
+ * a FileException instead of being treated as "not found".
  */
 
 namespace SugiPHP\Config\Tests;
 
+use SugiPHP\Config\Config;
+use SugiPHP\Config\DirectoryConfig;
 use SugiPHP\Config\Exception\FileException;
-use SugiPHP\Config\Loader\IniLoader;
-use SugiPHP\Config\Loader\JsonLoader;
-use SugiPHP\Config\Loader\PhpLoader;
-use SugiPHP\Config\Loader\XmlLoader;
-use SugiPHP\Config\LoaderConfig;
+use SugiPHP\Config\FileConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -31,18 +28,6 @@ class UnreadableFileTest extends TestCase
 
         $this->dir = sys_get_temp_dir() . '/sugi-unreadable-' . uniqid();
         mkdir($this->dir);
-
-        $contents = [
-            'php'  => '<?php return ["key" => "value"];',
-            'ini'  => 'key = value',
-            'json' => '{"key": "value"}',
-            'xml'  => '<config><key>value</key></config>',
-        ];
-        foreach ($contents as $ext => $content) {
-            $file = "{$this->dir}/conf.{$ext}";
-            file_put_contents($file, $content);
-            chmod($file, 0000);
-        }
     }
 
     protected function tearDown(): void
@@ -57,52 +42,50 @@ class UnreadableFileTest extends TestCase
         rmdir($this->dir);
     }
 
-    public static function loaderClasses(): array
+    public static function formats(): array
     {
         return [
-            'php'  => [PhpLoader::class, 'php'],
-            'ini'  => [IniLoader::class, 'ini'],
-            'json' => [JsonLoader::class, 'json'],
-            'xml'  => [XmlLoader::class, 'xml'],
+            'php'  => ['php', '<?php return ["key" => "value"];'],
+            'ini'  => ['ini', 'key = value'],
+            'json' => ['json', '{"key": "value"}'],
+            'xml'  => ['xml', '<config><key>value</key></config>'],
         ];
     }
 
-    #[DataProvider('loaderClasses')]
-    public function testLoaderWithoutPathsThrows(string $class, string $ext)
+    private function createUnreadable(string $ext, string $content): string
     {
-        $loader = new $class();
+        $file = "{$this->dir}/conf.{$ext}";
+        file_put_contents($file, $content);
+        chmod($file, 0000);
 
-        $this->expectException(FileException::class);
-        $loader->load("{$this->dir}/conf.{$ext}");
+        return $file;
     }
 
-    #[DataProvider('loaderClasses')]
-    public function testLoaderWithPathsThrows(string $class, string $ext)
+    #[DataProvider('formats')]
+    public function testFileConfigThrows(string $ext, string $content)
     {
-        $loader = new $class($this->dir);
+        $file = $this->createUnreadable($ext, $content);
 
         $this->expectException(FileException::class);
-        $loader->load('conf');
+        new FileConfig($file);
     }
 
-    #[DataProvider('loaderClasses')]
-    public function testLoaderWithPathsAndFullPathThrows(string $class, string $ext)
+    #[DataProvider('formats')]
+    public function testDirectoryConfigThrows(string $ext, string $content)
     {
-        $loader = new $class(__DIR__ . '/config');
+        $this->createUnreadable($ext, $content);
+        $config = new DirectoryConfig($this->dir);
 
         $this->expectException(FileException::class);
-        $loader->load("{$this->dir}/conf.{$ext}");
+        $config->get("conf.key");
     }
 
-    public function testLoaderConfigDoesNotFallThroughToNextLoader()
+    #[DataProvider('formats')]
+    public function testConfigThrows(string $ext, string $content)
     {
-        // conf.json is readable and would resolve "conf.key", but the
-        // unreadable conf.php found first by the PHP loader must not be
-        // silently skipped
-        chmod("{$this->dir}/conf.json", 0600);
-        $config = new LoaderConfig([new PhpLoader($this->dir), new JsonLoader($this->dir)]);
+        $file = $this->createUnreadable($ext, $content);
 
         $this->expectException(FileException::class);
-        $config->get('conf.key');
+        new Config($file);
     }
 }

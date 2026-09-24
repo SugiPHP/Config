@@ -5,61 +5,36 @@ declare(strict_types=1);
 namespace SugiPHP\Config;
 
 use SugiPHP\Config\Exception\ConfigException;
-use SugiPHP\Config\Loader\LoaderInterface;
 
 /**
  * Convenience entry point that picks the right configuration reader for
- * whatever you give its constructor:
+ * whatever path you give its constructor:
  *
  *   - a path to an existing file           -> FileConfig
  *   - a path to an existing directory      -> DirectoryConfig
- *   - a LoaderInterface,
- *     or an array of LoaderInterface       -> LoaderConfig
  *
  *   $config = new Config(__DIR__ . '/config/app.php');   // FileConfig
  *   $config = new Config(__DIR__ . '/config');            // DirectoryConfig
- *   $config = new Config(new PhpLoader($locator));        // LoaderConfig
- *   $config = new Config([$phpLoader, $jsonLoader]);
  */
 class Config implements ConfigInterface
 {
     private ConfigInterface $delegate;
 
     /**
-     * @param string|array<LoaderInterface>|LoaderInterface $source
+     * @param string $path a configuration file or a directory of them
      *
-     * @throws ConfigException if a string is neither an existing file nor an
-     *     existing directory, or an array contains anything but loaders
+     * @throws ConfigException if the path is neither an existing file nor an
+     *     existing directory
      */
-    public function __construct(string|array|LoaderInterface $source = [])
+    public function __construct(string $path)
     {
-        if ($source instanceof LoaderInterface) {
-            $this->delegate = new LoaderConfig($source);
-            return;
+        if (is_file($path)) {
+            $this->delegate = new FileConfig($path);
+        } elseif (is_dir($path)) {
+            $this->delegate = new DirectoryConfig($path);
+        } else {
+            throw new ConfigException("Neither a file nor a directory: {$path}");
         }
-
-        if (is_string($source)) {
-            if (is_file($source)) {
-                $this->delegate = new FileConfig($source);
-                return;
-            }
-
-            if (is_dir($source)) {
-                $this->delegate = new DirectoryConfig($source);
-                return;
-            }
-
-            throw new ConfigException("Neither a file nor a directory: {$source}");
-        }
-
-        // array of loaders
-        foreach ($source as $loader) {
-            if (!$loader instanceof LoaderInterface) {
-                throw new ConfigException('An array passed to Config must contain only ' . LoaderInterface::class . ' instances');
-            }
-        }
-
-        $this->delegate = new LoaderConfig($source);
     }
 
     /**
