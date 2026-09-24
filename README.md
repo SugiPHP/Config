@@ -129,7 +129,7 @@ $config->toArray();              // the whole underlying array
 If your configuration is split across multiple files in a directory (one file
 per "section") instead of one big file, use `DirectoryConfig`. The first
 segment of the key (up to the first dot) is treated as a file name to look up
-in the given directory (or directories); the rest of the key is resolved with
+in the given directory; the rest of the key is resolved with
 dot notation inside that file's contents.
 
 ```
@@ -156,18 +156,8 @@ $config->has("db.port");                // true
 ?>
 ```
 
-You can search more than one directory; the first one containing a matching
-file wins:
-
-```php
-<?php
-$config = new \SugiPHP\Config\DirectoryConfig([__DIR__."/config", __DIR__."/app/config"]);
-?>
-```
-
-The file's extension is auto-detected: for each directory, `DirectoryConfig`
-looks for `<name>.php`, then `<name>.ini`, then `<name>.json`, then
-`<name>.xml` — the first match wins. If a directory you pass doesn't exist,
+The file's extension is auto-detected: `DirectoryConfig` looks for `<name>.php`, then `<name>.ini`, then `<name>.json`, then
+`<name>.xml` — the first match wins. If the directory doesn't exist,
 the constructor throws a `SugiPHP\Config\Exception\ConfigException`.
 
 ## LoaderConfig
@@ -214,15 +204,13 @@ have to pick a class yourself. Its constructor looks at what you give it and
 delegates accordingly:
 
  - a path to an existing file           -> `FileConfig`
- - a path to an existing directory,
-   or an array of directories          -> `DirectoryConfig`
+ - a path to an existing directory      -> `DirectoryConfig`
  - a loader, or an array of loaders     -> `LoaderConfig`
 
 ```php
 <?php
 new \SugiPHP\Config\Config(__DIR__."/config/app.php");                          // FileConfig
 new \SugiPHP\Config\Config(__DIR__."/config");                                  // DirectoryConfig
-new \SugiPHP\Config\Config([__DIR__."/config", __DIR__."/config.local"]);       // DirectoryConfig
 new \SugiPHP\Config\Config(new \SugiPHP\Config\Loader\JsonLoader(__DIR__."/config")); // LoaderConfig
 ?>
 ```

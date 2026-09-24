@@ -41,28 +41,6 @@ class DirectoryConfigTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testConstructAcceptsArrayOfDirectories()
-    {
-        $config = new DirectoryConfig([__DIR__."/config", __DIR__."/config2"]);
-        $this->assertInstanceOf(ConfigInterface::class, $config);
-    }
-
-    public function testConstructWithNoArgumentsIsEmpty()
-    {
-        $config = new DirectoryConfig();
-        $this->assertInstanceOf(ConfigInterface::class, $config);
-        $this->assertNull($config->get("foo"));
-        $this->assertFalse($config->has("foo"));
-    }
-
-    public function testAddDirectoryAfterConstruction()
-    {
-        $config = new DirectoryConfig();
-        $config->addDirectory(__DIR__."/config");
-
-        $this->assertSame(42, $config->get("test.int"));
-    }
-
     public function testGetReturnsNullIfResourceFileNotFound()
     {
         $config = new DirectoryConfig(__DIR__."/config");
@@ -128,13 +106,10 @@ class DirectoryConfigTest extends TestCase
         $this->assertFalse($config->has("test.nosuchkey"));
     }
 
-    public function testMultipleDirectoriesAreSearched()
+    public function testTrailingSlashInDirectoryIsAccepted()
     {
-        $config = new DirectoryConfig([__DIR__."/config", __DIR__."/config2"]);
-        // "test" is only in the first directory
+        $config = new DirectoryConfig(__DIR__."/config/");
         $this->assertSame(42, $config->get("test.int"));
-        // "site" is only in the second directory
-        $this->assertSame("site in config2", $config->get("site.name"));
     }
 
     /**

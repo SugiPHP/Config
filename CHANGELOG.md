@@ -44,11 +44,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `.json`, `.ini`, `.xml`). Throws `ConfigException` if the file doesn't
   exist, has no extension, or has an unsupported one.
 - `SugiPHP\Config\DirectoryConfig`: resolves `resource.key` style lookups
-  against files in one or more directories — the first segment of the key is
+  against files in a single directory — the first segment of the key is
   the file name (extension auto-detected: `.php`, then `.ini`, then `.json`,
   then `.xml`; first match wins), the rest is resolved with dot notation
-  inside that file. Public `addDirectory()`. Throws `ConfigException` for a
-  directory that doesn't exist.
+  inside that file. The constructor takes exactly one directory (a string,
+  not an array) and throws `ConfigException` if it doesn't exist.
 - `SugiPHP\Config\LoaderConfig`: a `Config`-independent reimplementation of
   the old loader-list resolution (tries each loader in order, first match
   wins). Public `addLoader()`.

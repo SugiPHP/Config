@@ -105,14 +105,10 @@ class ConfigTest extends TestCase
         $this->assertSame(42, $config->get("test.int"));
     }
 
-    public function testArrayOfDirectoriesUsesDirectoryConfig()
+    public function testArrayOfDirectoriesThrows()
     {
-        $config = new Config([__DIR__."/config", __DIR__."/config2"]);
-
-        // "test" is only in the first directory
-        $this->assertSame(42, $config->get("test.int"));
-        // "site" is only in the second directory
-        $this->assertSame("site in config2", $config->get("site.name"));
+        $this->expectException(ConfigException::class);
+        new Config([__DIR__."/config", __DIR__."/config2"]);
     }
 
     public function testInvalidPathThrows()

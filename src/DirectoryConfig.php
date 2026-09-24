@@ -7,28 +7,22 @@ namespace SugiPHP\Config;
 use SugiPHP\Config\Exception\ConfigException;
 
 /**
- * Reads configuration spread across multiple files in one or more directories,
- * with dot notation access (like DotConfig) across the whole thing.
+ * Reads configuration spread across multiple files in a directory, with dot
+ * notation access (like DotConfig) across the whole thing.
  *
  * The first segment of a key (up to the first dot) is treated as a file name
- * (without extension) to look up in the given directories; the rest of the key
+ * (without extension) to look up in the given directory; the rest of the key
  * is resolved with dot notation inside that file's contents. The file's
- * extension is auto-detected: the directories are searched, in order, for
+ * extension is auto-detected: the directory is searched, in order, for
  * <name>.php, then <name>.ini, then <name>.json, then <name>.xml.
  *
  *   // config/db.php returns ['host' => 'localhost']
  *   $config = new DirectoryConfig(__DIR__ . '/config');
  *   $config->get('db.host'); // 'localhost'
- *
- *   // search more than one directory
- *   $config = new DirectoryConfig([__DIR__ . '/config', __DIR__ . '/config.local']);
- *
- * @see LoaderConfig for the equivalent that resolves resources via one or
- *      more LoaderInterface instances instead of directories.
  */
 class DirectoryConfig implements ConfigInterface
 {
-    private array $directories = [];
+    private string $directory;
 
     /**
      * @var array<string, array|null>
@@ -36,18 +30,16 @@ class DirectoryConfig implements ConfigInterface
     private array $registry = [];
 
     /**
-     * @param string|array<string> $directories one or more directories to search
+     * @param string $directory the directory to search
+     *
+     * @throws ConfigException if the directory does not exist
      */
-    public function __construct(string|array $directories = [])
+    public function __construct(string $directory)
     {
-        if (is_string($directories)) {
-            $this->addDirectory($directories);
-            return;
+        if (!is_dir($directory)) {
+            throw new ConfigException("Directory does not exist: $directory");
         }
-
-        foreach ($directories as $directory) {
-            $this->addDirectory($directory);
-        }
+        $this->directory = rtrim($directory, "\\/");
     }
 
     /**
@@ -86,14 +78,6 @@ class DirectoryConfig implements ConfigInterface
         return !is_null($values);
     }
 
-    public function addDirectory(string $directory): void
-    {
-        if (!is_dir($directory)) {
-            throw new ConfigException("Directory does not exist: $directory");
-        }
-        $this->directories[] = $directory;
-    }
-
     /**
      * Makes sure the resource (the first segment of the key) has been
      * discovered and, if found, loaded into the registry.
@@ -129,12 +113,10 @@ class DirectoryConfig implements ConfigInterface
 
     private function locateFile(string $fileName): ?string
     {
-        foreach ($this->directories as $directory) {
-            foreach (['php', 'ini', 'json', 'xml'] as $ext) {
-                $filePath = $directory . '/' . $fileName . '.' . $ext;
-                if (file_exists($filePath)) {
-                    return $filePath;
-                }
+        foreach (['php', 'ini', 'json', 'xml'] as $ext) {
+            $filePath = $this->directory . '/' . $fileName . '.' . $ext;
+            if (file_exists($filePath)) {
+                return $filePath;
             }
         }
         return null;
