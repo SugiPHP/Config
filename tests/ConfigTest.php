@@ -100,7 +100,7 @@ class ConfigTest extends TestCase
 
     public function testDirectoryPathUsesDirectoryConfig()
     {
-        $config = new Config(__DIR__."/config");
+        $config = new Config(__DIR__."/directory");
 
         $this->assertSame(42, $config->get("test.int"));
     }

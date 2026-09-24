@@ -156,9 +156,12 @@ $config->has("db.port");                // true
 ?>
 ```
 
-The file's extension is auto-detected: `DirectoryConfig` looks for `<name>.php`, then `<name>.ini`, then `<name>.json`, then
-`<name>.xml` — the first match wins. If the directory doesn't exist,
-the constructor throws a `SugiPHP\Config\Exception\ConfigException`.
+The file's extension is auto-detected: `DirectoryConfig` looks for
+`<name>.php`, `<name>.ini`, `<name>.json` and `<name>.xml`. Exactly one of
+them may exist: if, say, both `db.ini` and `db.json` are in the directory,
+the lookup is ambiguous and `get()`/`has()` throw a
+`SugiPHP\Config\Exception\ConfigException` instead of silently picking one.
+If the directory doesn't exist, the constructor throws a `ConfigException`.
 
 ## LoaderConfig
 

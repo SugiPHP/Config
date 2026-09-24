@@ -49,9 +49,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   exist, has no extension, or has an unsupported one.
 - `SugiPHP\Config\DirectoryConfig`: resolves `resource.key` style lookups
   against files in a single directory — the first segment of the key is
-  the file name (extension auto-detected: `.php`, then `.ini`, then `.json`,
-  then `.xml`; first match wins), the rest is resolved with dot notation
-  inside that file. The constructor takes exactly one directory (a string,
+  the file name (extension auto-detected: `.php`, `.ini`, `.json` or `.xml`;
+  if more than one exists for the same name, the lookup throws
+  `ConfigException` instead of one file silently shadowing the others), the
+  rest is resolved with dot notation inside that file. The constructor takes exactly one directory (a string,
   not an array) and throws `ConfigException` if it doesn't exist.
 - `SugiPHP\Config\LoaderConfig`: a `Config`-independent reimplementation of
   the old loader-list resolution (tries each loader in order, first match

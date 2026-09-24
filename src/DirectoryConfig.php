@@ -13,8 +13,10 @@ use SugiPHP\Config\Exception\ConfigException;
  * The first segment of a key (up to the first dot) is treated as a file name
  * (without extension) to look up in the given directory; the rest of the key
  * is resolved with dot notation inside that file's contents. The file's
- * extension is auto-detected: the directory is searched, in order, for
- * <name>.php, then <name>.ini, then <name>.json, then <name>.xml.
+ * extension is auto-detected: <name>.php, <name>.ini, <name>.json or
+ * <name>.xml. Exactly one of them may exist - if more than one does, the
+ * resource is ambiguous and a ConfigException is thrown, rather than one
+ * file silently shadowing the others.
  *
  *   // config/db.php returns ['host' => 'localhost']
  *   $config = new DirectoryConfig(__DIR__ . '/config');
@@ -100,6 +102,8 @@ class DirectoryConfig implements ConfigInterface
      * @param string $resource
      *
      * @return array|null Returns null if the resource was not found
+     *
+     * @throws ConfigException if the resource is ambiguous
      */
     private function discover(string $resource): ?array
     {
@@ -111,14 +115,28 @@ class DirectoryConfig implements ConfigInterface
         return (new FileConfig($filePath))->toArray();
     }
 
+    /**
+     * @param string $fileName file name without extension
+     *
+     * @return string|null Returns null if no matching file exists
+     *
+     * @throws ConfigException if more than one matching file exists
+     */
     private function locateFile(string $fileName): ?string
     {
+        $found = [];
         foreach (['php', 'ini', 'json', 'xml'] as $ext) {
             $filePath = $this->directory . '/' . $fileName . '.' . $ext;
-            if (file_exists($filePath)) {
-                return $filePath;
+            if (is_file($filePath)) {
+                $found[] = $filePath;
             }
         }
-        return null;
+
+        if (count($found) > 1) {
+            $names = implode(', ', array_map('basename', $found));
+            throw new ConfigException("Ambiguous configuration resource \"{$fileName}\": found {$names} in {$this->directory}");
+        }
+
+        return $found[0] ?? null;
     }
 }
