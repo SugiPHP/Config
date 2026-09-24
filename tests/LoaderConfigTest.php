@@ -49,8 +49,8 @@ class LoaderConfigTest extends TestCase
 
         // in INI there is no key "int"
         $this->assertNull($config->get("test.int"));
-        // it's "iint", and it is "42" (string), not 42
-        $this->assertSame("42", $config->get("test.iint"));
+        // it's "iint", and with INI_SCANNER_TYPED it's a native int, same as JSON/PHP
+        $this->assertSame(42, $config->get("test.iint"));
     }
 
     public function testAddLoaderAfterConstruction()

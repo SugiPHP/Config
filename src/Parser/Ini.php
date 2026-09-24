@@ -14,11 +14,9 @@ class Ini extends AbstractFileReader
     /**
      * {@inheritDoc}
      */
-    public function fromString(string $string): array
+    public function parse(mixed $data): array
     {
-        $arr = parse_ini_string($string, true);
-        // TODO:
-        // $arr = parse_ini_string($string, true, INI_SCANNER_TYPED);
+        $arr = parse_ini_string((string) $data, true, INI_SCANNER_TYPED);
         if (false === $arr) {
             throw new ParserException('INI parse error');
         }

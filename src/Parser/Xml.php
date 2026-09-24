@@ -14,9 +14,9 @@ class Xml extends AbstractFileReader
      *
      * {@inheritDoc}
      */
-    public function fromString(string $string): array
+    public function parse(mixed $data): array
     {
-        $xml = simplexml_load_string($string);
+        $xml = simplexml_load_string((string) $data);
         $json = json_encode($xml);
         $array = json_decode($json, true);
 

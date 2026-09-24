@@ -98,6 +98,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `ConfigInterface`, defining `has(string $key): bool` and
   `get(string $key, mixed $default = null): mixed`. `Config` now implements it.
 - `Config::has()` method to check whether a key is registered.
+- `SugiPHP\Config\Parser\ParserInterface::parse(mixed $data): array` and
+  `parseFile(string $fileName): array`, replacing `fromString()`/`fromFile()`
+  as the interface's contract. All parsers (`Ini`, `Json`, `Php`, `Xml`) and
+  `AbstractFileReader` implement the new methods; the loaders (`IniLoader`,
+  `JsonLoader`, `NativeLoader`, `XmlLoader`) now call `parseFile()` internally.
 
 ### Changed
 
@@ -118,3 +123,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `E_USER_DEPRECATED` notice; they will be removed in a future major version.
   Pass all search paths to the `FileLocator` constructor instead of mutating them
   after construction.
+- `ParserInterface::fromString()` and `fromFile()` are deprecated in favor of
+  `parse()` and `parseFile()` (same behavior, `fromString()`'s `string $string`
+  parameter is now `mixed $data` on `parse()`). Calling either old method on
+  `Ini`, `Json`, `Php`, `Xml` or `AbstractFileReader` now emits an
+  `E_USER_DEPRECATED` notice and delegates to the new method; they will be
+  removed in a future major version.

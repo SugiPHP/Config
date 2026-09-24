@@ -60,10 +60,8 @@ class ConfigTest extends TestCase
 
         // in INI there is no key int
         $this->assertNull($config->get("test.int"));
-        // it's iint
-        $this->assertNotSame(42, $config->get("test.iint"));
-        // it is "42", not 42
-        $this->assertEquals(42, $config->get("test.iint"));
+        // it's iint, and with INI_SCANNER_TYPED it's a native int, same as JSON/PHP
+        $this->assertSame(42, $config->get("test.iint"));
     }
 
     public function testHasReturnsFalseWhenNotFound()

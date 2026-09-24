@@ -16,9 +16,9 @@ class Json extends AbstractFileReader
      *
      * {@inheritDoc}
      */
-    public function fromString(string $string): array
+    public function parse(mixed $data): array
     {
-        $arr = json_decode($string, true);
+        $arr = json_decode((string) $data, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new ConfigException(json_last_error_msg());

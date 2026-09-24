@@ -56,7 +56,7 @@ abstract class AbstractLoader implements LoaderInterface
             return null;
         }
 
-        return $this->getParser()->fromFile($file);
+        return $this->getParser()->parseFile($file);
     }
 
     /**
