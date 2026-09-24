@@ -166,20 +166,24 @@ If the directory doesn't exist, the constructor throws a `ConfigException`.
 ## Config
 
 As shown at the top, `Config` can do all of the above by itself — you never
-have to pick a class yourself. Its constructor looks at the path you give it
-and delegates accordingly:
+have to pick a class yourself. Its constructor looks at what you give it and
+delegates accordingly:
 
  - a path to an existing file           -> `FileConfig`
  - a path to an existing directory      -> `DirectoryConfig`
+ - an array                             -> `DotConfig`
 
 ```php
 <?php
-new \SugiPHP\Config\Config(__DIR__."/config/app.php"); // FileConfig
-new \SugiPHP\Config\Config(__DIR__."/config");         // DirectoryConfig
+new \SugiPHP\Config\Config(__DIR__."/config/app.php");            // FileConfig
+new \SugiPHP\Config\Config(__DIR__."/config");                    // DirectoryConfig
+new \SugiPHP\Config\Config(["db" => ["host" => "localhost"]]);    // DotConfig
 ?>
 ```
 
-Anything else (a path that is neither a file nor a directory) throws a
+An array works exactly like a file with the same contents, which is handy
+for tests or for configuration built at runtime. A string that is neither an
+existing file nor an existing directory throws a
 `SugiPHP\Config\Exception\ConfigException`.
 
 ## Upgrading from loaders (2.x)

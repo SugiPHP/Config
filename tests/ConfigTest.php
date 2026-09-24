@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * Tests for Config class: a dispatching facade over FileConfig and
- * DirectoryConfig, based on the path passed to its constructor.
+ * Tests for Config class: a dispatching facade over FileConfig,
+ * DirectoryConfig and DotConfig, based on what's passed to its constructor.
  */
 
 namespace SugiPHP\Config\Tests;
@@ -35,6 +35,37 @@ class ConfigTest extends TestCase
 
         $this->assertEquals(include __DIR__."/directory/test.php", $config->get("test"));
         $this->assertSame(42, $config->get("test.int"));
+    }
+
+    public function testArrayUsesDotConfig()
+    {
+        $config = new Config(["db" => ["host" => "localhost", "port" => 5432], "debug" => false]);
+
+        $this->assertSame("localhost", $config->get("db.host"));
+        $this->assertSame(["host" => "localhost", "port" => 5432], $config->get("db"));
+        $this->assertFalse($config->get("debug"));
+        $this->assertTrue($config->has("db.port"));
+        $this->assertFalse($config->has("db.user"));
+        $this->assertSame("root", $config->get("db.user", "root"));
+    }
+
+    public function testEmptyArrayIsEmptyConfig()
+    {
+        $config = new Config([]);
+
+        $this->assertNull($config->get("foo"));
+        $this->assertFalse($config->has("foo"));
+    }
+
+    public function testArrayBehavesLikeFileWithSameContents()
+    {
+        $fromFile = new Config(__DIR__."/config/test.php");
+        $fromArray = new Config(include __DIR__."/config/test.php");
+
+        foreach (["int", "str", "arr.sub", "null", "nosuchkey"] as $key) {
+            $this->assertSame($fromFile->has($key), $fromArray->has($key), "has({$key})");
+            $this->assertSame($fromFile->get($key, "default"), $fromArray->get($key, "default"), "get({$key})");
+        }
     }
 
     public function testGetReturnsNullIfNotFound()

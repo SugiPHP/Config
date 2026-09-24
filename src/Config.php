@@ -8,32 +8,40 @@ use SugiPHP\Config\Exception\ConfigException;
 
 /**
  * Convenience entry point that picks the right configuration reader for
- * whatever path you give its constructor:
+ * whatever you give its constructor:
  *
  *   - a path to an existing file           -> FileConfig
  *   - a path to an existing directory      -> DirectoryConfig
+ *   - an array                             -> DotConfig
  *
  *   $config = new Config(__DIR__ . '/config/app.php');   // FileConfig
  *   $config = new Config(__DIR__ . '/config');            // DirectoryConfig
+ *   $config = new Config(['db' => ['host' => 'localhost']]); // DotConfig
  */
 class Config implements ConfigInterface
 {
     private ConfigInterface $delegate;
 
     /**
-     * @param string $path a configuration file or a directory of them
+     * @param string|array $source a configuration file, a directory of them,
+     *     or the configuration itself as an array
      *
-     * @throws ConfigException if the path is neither an existing file nor an
+     * @throws ConfigException if a string is neither an existing file nor an
      *     existing directory
      */
-    public function __construct(string $path)
+    public function __construct(string|array $source)
     {
-        if (is_file($path)) {
-            $this->delegate = new FileConfig($path);
-        } elseif (is_dir($path)) {
-            $this->delegate = new DirectoryConfig($path);
+        if (is_array($source)) {
+            $this->delegate = new DotConfig($source);
+            return;
+        }
+
+        if (is_file($source)) {
+            $this->delegate = new FileConfig($source);
+        } elseif (is_dir($source)) {
+            $this->delegate = new DirectoryConfig($source);
         } else {
-            throw new ConfigException("Neither a file nor a directory: {$path}");
+            throw new ConfigException("Neither a file nor a directory: {$source}");
         }
     }
 
