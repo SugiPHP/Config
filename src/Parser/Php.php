@@ -24,7 +24,11 @@ class Php implements ParserInterface
             throw new FileException("File {$fileName} is unreadable");
         }
 
-        $arr = include $fileName;
+        try {
+            $arr = include $fileName;
+        } catch (\ParseError $e) {
+            throw new ParserException("PHP parse error in {$fileName} on line {$e->getLine()}: {$e->getMessage()}", 0, $e);
+        }
         if (!is_array($arr)) {
             throw new ParserException("File {$fileName} does not return an array");
         }

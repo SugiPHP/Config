@@ -73,7 +73,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
     `ConfigException`; now `ParserException`.
   - `Php`: a file that doesn't return an array threw `FileException`; now
     `ParserException`. `Php::parse()` with a non-array also throws
-    `ParserException`.
+    `ParserException`. A PHP file with a syntax error used to escape as an
+    uncaught `\ParseError`; it's now wrapped in a `ParserException` (the
+    original `ParseError` is available via `getPrevious()`).
+  - `Ini`: a syntax error used to emit a PHP warning (which a global error
+    handler could turn into a different exception) before throwing; the
+    warning is now captured and its text included in the `ParserException`
+    message.
 - A configuration file that exists but isn't readable now always throws
   `FileException`, instead of being handled differently depending on how the
   loader was built. Previously a loader without search paths treated such a
